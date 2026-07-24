@@ -1,27 +1,73 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Subjects from "./pages/Subjects/Subjects";
-import Planner from "./pages/Planner/Planner";
-import Progress from "./pages/Progress/Progress";
-import Notes from "./pages/Notes/Notes";
-import Bookmarks from "./pages/Bookmarks/Bookmarks";
-import Settings from "./pages/Settings/Settings";
-import Login from "./pages/Login/Login";
-import Signup from "./pages/Signup/Signup";
+import MainLayout from "./components/layouts/MainLayout";
+
+import {
+  Dashboard,
+  Subjects,
+  Topics,
+  Questions,
+  QuestionDetails,
+  Planner,
+  Progress,
+  Notes,
+  Bookmarks,
+  Settings,
+  Login,
+  Signup,
+} from "./pages";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      {/* Redirect Root */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      {/* Public Routes */}
+      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/subjects" element={<Subjects />} />
-      <Route path="/planner" element={<Planner />} />
-      <Route path="/progress" element={<Progress />} />
-      <Route path="/notes" element={<Notes />} />
-      <Route path="/bookmarks" element={<Bookmarks />} />
-      <Route path="/settings" element={<Settings />} />
+
+      {/* Protected Routes */}
+      <Route element={<MainLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* Study Flow */}
+        <Route path="/subjects" element={<Subjects />} />
+
+        <Route
+          path="/subjects/:subjectId"
+          element={<Topics />}
+        />
+
+        <Route
+          path="/subjects/:subjectId/topics/:topicId"
+          element={<Questions />}
+        />
+
+        <Route
+          path="/subjects/:subjectId/topics/:topicId/questions/:questionId"
+          element={<QuestionDetails />}
+        />
+
+        {/* Other Modules */}
+        <Route path="/planner" element={<Planner />} />
+        <Route path="/progress" element={<Progress />} />
+        <Route path="/notes" element={<Notes />} />
+        <Route path="/bookmarks" element={<Bookmarks />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
+
+      {/* 404 */}
+      <Route
+        path="*"
+        element={
+          <div className="flex h-screen items-center justify-center">
+            <h1 className="text-3xl font-bold text-gray-700">
+              404 | Page Not Found
+            </h1>
+          </div>
+        }
+      />
     </Routes>
   );
 }
