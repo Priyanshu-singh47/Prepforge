@@ -1,11 +1,12 @@
-import { Search, Plus } from "lucide-react";
+import { Search } from "lucide-react";
 
-function NotesToolbar({
+function BookmarkToolbar({
   search,
   setSearch,
   subject,
   setSubject,
-  onNewNote,
+  difficulty,
+  setDifficulty,
 }) {
   return (
     <div className="inline-flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
@@ -19,14 +20,14 @@ function NotesToolbar({
 
         <input
           type="text"
-          placeholder="Search notes..."
+          placeholder="Search bookmarks..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-3 text-sm outline-none transition-colors duration-200 hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
       </div>
 
-      {/* Subject Filter */}
+      {/* Subject */}
 
       <select
         value={subject}
@@ -43,17 +44,20 @@ function NotesToolbar({
         <option>System Design</option>
       </select>
 
-      {/* New Note Button */}
+      {/* Difficulty */}
 
-      <button
-        onClick={onNewNote}
-        className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md active:scale-95"
+      <select
+        value={difficulty}
+        onChange={(e) => setDifficulty(e.target.value)}
+        className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none transition-colors duration-200 hover:border-gray-300 hover:bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       >
-        <Plus size={18} />
-        New
-      </button>
+        <option>Difficulty</option>
+        <option>Easy</option>
+        <option>Medium</option>
+        <option>Hard</option>
+      </select>
     </div>
   );
 }
 
-export default NotesToolbar;
+export default BookmarkToolbar;
