@@ -1,41 +1,78 @@
 const asyncHandler = require("express-async-handler");
 
 const User = require("../models/User");
+const Subject = require("../models/Subject");
+const Topic = require("../models/Topic");
 const Question = require("../models/Question");
 const QuestionProgress = require("../models/questionProgressModel");
 const PlannerTask = require("../models/PlannerTask");
 
 const getDashboard = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
 
-    const user = await User.findById(req.user._id).select("-password");
+    const [
+        user,
+        totalSubjects,
+        totalTopics,
+        totalQuestions,
+        solved,
+        reviewLater,
+        bookmarked,
+        notes,
+        planner,
+        recentActivity,
+    ] = await Promise.all([
 
-    const totalQuestions = await Question.countDocuments();
+        User.findById(userId).select("name email"),
 
-    const progress = await QuestionProgress.find({
-        user: req.user._id,
-    });
+        Subject.countDocuments(),
 
-    const planner = await PlannerTask.find({
-        user: req.user._id,
-    })
-    .sort({ dueDate: 1 })
-    .limit(5);
+        Topic.countDocuments(),
 
-    const solved = progress.filter(
-        item => item.status === "Done"
-    ).length;
+        Question.countDocuments(),
 
-    const reviewLater = progress.filter(
-        item => item.status === "Review Later"
-    ).length;
+        QuestionProgress.countDocuments({
+            user: userId,
+            status: "Done",
+        }),
 
-    const bookmarked = progress.filter(
-        item => item.isBookmarked
-    ).length;
+        QuestionProgress.countDocuments({
+            user: userId,
+            status: "Review Later",
+        }),
 
-    const notes = progress.filter(
-        item => item.notes !== ""
-    ).length;
+        QuestionProgress.countDocuments({
+            user: userId,
+            isBookmarked: true,
+        }),
+
+        QuestionProgress.countDocuments({
+            user: userId,
+            notes: { $ne: "" },
+        }),
+
+        PlannerTask.find({
+            user: userId,
+        })
+            .populate("subject", "name")
+            .sort({ dueDate: 1 })
+            .limit(5),
+
+        QuestionProgress.find({
+            user: userId,
+            status: { $ne: "Not Started" },
+        })
+            .populate({
+                path: "question",
+                select: "title difficulty",
+                populate: {
+                    path: "topic",
+                    select: "name",
+                },
+            })
+            .sort({ updatedAt: -1 })
+            .limit(5),
+    ]);
 
     const completionPercentage =
         totalQuestions === 0
@@ -43,10 +80,11 @@ const getDashboard = asyncHandler(async (req, res) => {
             : Number(((solved / totalQuestions) * 100).toFixed(2));
 
     res.status(200).json({
-
         user,
 
         statistics: {
+            totalSubjects,
+            totalTopics,
             totalQuestions,
             solved,
             reviewLater,
@@ -57,8 +95,8 @@ const getDashboard = asyncHandler(async (req, res) => {
 
         planner,
 
+        recentActivity,
     });
-
 });
 
 module.exports = {

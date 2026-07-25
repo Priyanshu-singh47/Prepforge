@@ -6,6 +6,51 @@ const Topic = require("../models/Topic");
 const QuestionProgress = require("../models/questionProgressModel");
 
 // ======================================
+// GET All Questions
+// ======================================
+const getAllQuestions = asyncHandler(async (req, res) => {
+
+    const questions = await Question.find()
+        .populate({
+            path: "topic",
+            select: "name subject",
+            populate: {
+                path: "subject",
+                select: "name",
+            },
+        })
+        .sort({
+            order: 1,
+        });
+
+    const progress = await QuestionProgress.find({
+        user: req.user._id,
+    });
+
+    const progressMap = {};
+
+    progress.forEach((item) => {
+        progressMap[item.question.toString()] = item;
+    });
+
+    const result = questions.map((question) => {
+
+        const userProgress = progressMap[question._id.toString()];
+
+        return {
+            ...question.toObject(),
+            status: userProgress?.status || "Not Started",
+            isBookmarked: userProgress?.isBookmarked || false,
+            notes: userProgress?.notes || "",
+        };
+
+    });
+
+    res.status(200).json(result);
+
+});
+
+// ======================================
 // GET Questions
 // ======================================
 const getQuestions = asyncHandler(async (req, res) => {
@@ -213,6 +258,7 @@ const updateNotes = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+    getAllQuestions,
     getQuestions,
     getQuestion,
     updateStatus,

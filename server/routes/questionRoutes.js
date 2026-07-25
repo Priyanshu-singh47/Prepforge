@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
+    getAllQuestions,
     getQuestions,
     getQuestion,
     updateStatus,
@@ -18,6 +19,12 @@ const {
     updateBookmarkSchema,
     updateNotesSchema,
 } = require("../validators/questionValidator");
+
+router.get(
+    "/",
+    authMiddleware,
+    getAllQuestions
+);
 
 router.get(
     "/topic/:topicId",

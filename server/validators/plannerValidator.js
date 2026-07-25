@@ -2,6 +2,10 @@ const Joi = require("joi");
 
 const createPlannerSchema = Joi.object({
 
+    subject: Joi.string()
+        .allow(null)
+        .optional(),
+
     title: Joi.string()
         .trim()
         .required(),
@@ -14,9 +18,16 @@ const createPlannerSchema = Joi.object({
     dueDate: Joi.date()
         .required(),
 
+    priority: Joi.string()
+        .valid("Low", "Medium", "High")
+        .optional(),
+
 });
 
 const updatePlannerSchema = Joi.object({
+
+    subject: Joi.string()
+        .allow(null),
 
     title: Joi.string()
         .trim(),
@@ -27,7 +38,11 @@ const updatePlannerSchema = Joi.object({
 
     dueDate: Joi.date(),
 
-    completed: Joi.boolean(),
+    priority: Joi.string()
+        .valid("Low", "Medium", "High"),
+
+    status: Joi.string()
+        .valid("Pending", "Completed"),
 
 }).min(1);
 
