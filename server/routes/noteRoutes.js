@@ -1,38 +1,31 @@
 const express = require("express");
-
-const router = express.Router();
-
-const authMiddleware = require("../middleware/authMiddleware");
-const validate = require("../middleware/validate");
-
-const {
-    createNoteSchema,
-    updateNoteSchema,
-} = require("../validators/noteValidator");
-
 const {
     getNotes,
     createNote,
     updateNote,
     deleteNote,
+    getQuestionNote,
+    saveQuestionNote,
 } = require("../controllers/noteController");
+const protect = require("../middleware/authMiddleware");
 
-router.use(authMiddleware);
+const router = express.Router();
 
-router.get("/", getNotes);
+router.use(protect);
 
-router.post(
-    "/",
-    validate(createNoteSchema),
-    createNote
-);
+// Notes CRUD
+router.route("/")
+    .get(getNotes)
+    .post(createNote);
 
-router.put(
-    "/:questionId",
-    validate(updateNoteSchema),
-    updateNote
-);
+// Question Notes
+router.route("/question/:questionId")
+    .get(getQuestionNote)
+    .post(saveQuestionNote);
 
-router.delete("/:questionId", deleteNote);
+// Update/Delete Note
+router.route("/:id")
+    .put(updateNote)
+    .delete(deleteNote);
 
 module.exports = router;

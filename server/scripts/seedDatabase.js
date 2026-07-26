@@ -71,40 +71,40 @@ const seedDatabase = async () => {
         await Topic.insertMany(topicDocs);
 
         console.log(`Topics seeded (${topicDocs.length})`);
+// =====================
+// Seed Resources
+// =====================
 
-        // =====================
-        // Seed Resources
-        // =====================
+const resourceDocs = [];
 
-        const resourceDocs = [];
+for (const [subjectName, subjectResources] of Object.entries(resources)) {
 
-        for (const [subjectName, subjectResources] of Object.entries(resources)) {
+    const subject = createdSubjects.find(
+        (s) => s.name === subjectName
+    );
 
-            const subject = createdSubjects.find(
-                (s) => s.name === subjectName
-            );
+    if (!subject) {
+        console.log(`Subject not found for resources: ${subjectName}`);
+        continue;
+    }
 
-            if (!subject) {
-                console.log(`Subject not found for resources: ${subjectName}`);
-                continue;
-            }
+    for (const resource of subjectResources) {
 
-            for (const resource of subjectResources) {
+        resourceDocs.push({
+            subject: subject._id,
+            title: resource.title,
+            type: resource.type,
+            platform: resource.platform,
+            url: resource.url,
+        });
 
-                resourceDocs.push({
-                    subject: subject._id,
-                    title: resource.title,
-                    platform: resource.platform,
-                    url: resource.url,
-                });
+    }
 
-            }
+}
 
-        }
+await Resource.insertMany(resourceDocs);
 
-        await Resource.insertMany(resourceDocs);
-
-        console.log(`Resources seeded (${resourceDocs.length})`);
+console.log(`Resources seeded (${resourceDocs.length})`);
 
        // =====================
 // Seed Questions
@@ -132,6 +132,18 @@ for (const [topicName, questions] of Object.entries(allQuestions)) {
 
     for (const question of questions) {
 
+        if (!question.title || !question.difficulty) {
+
+            console.log("\n====================================");
+            console.log("Invalid Question Found");
+            console.log("Topic:", topicName);
+            console.log("Question Data:");
+            console.log(question);
+            console.log("====================================\n");
+
+            process.exit(1);
+        }
+
         questionDocs.push({
             topic: topic._id,
             title: question.title,
@@ -146,6 +158,8 @@ for (const [topicName, questions] of Object.entries(allQuestions)) {
     }
 
 }
+
+console.log(`Questions Ready: ${questionDocs.length}`);
 
 await Question.insertMany(questionDocs);
 

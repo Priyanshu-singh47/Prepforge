@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 
 const Question = require("../models/Question");
 const Topic = require("../models/Topic");
-const QuestionProgress = require("../models/questionProgressModel");
+const QuestionProgress = require("../models/QuestionProgress");
+const User = require("../models/User");
 
 // ======================================
 // GET All Questions
@@ -174,6 +175,47 @@ const updateStatus = asyncHandler(async (req, res) => {
             setDefaultsOnInsert: true,
         }
     );
+
+    if (status === "Done") {
+
+        const user = await User.findById(req.user._id);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (!user.lastActiveDate) {
+
+            user.currentStreak = 1;
+            user.lastActiveDate = today;
+
+        } else {
+
+            const lastActive = new Date(user.lastActiveDate);
+            lastActive.setHours(0, 0, 0, 0);
+
+            const diffDays = Math.floor(
+                (today - lastActive) / (1000 * 60 * 60 * 24)
+            );
+
+            if (diffDays === 1) {
+
+                user.currentStreak += 1;
+                user.lastActiveDate = today;
+
+            } else if (diffDays > 1) {
+
+                user.currentStreak = 1;
+                user.lastActiveDate = today;
+
+            }
+
+            // diffDays === 0
+            // Already counted today's streak.
+        }
+
+        await user.save();
+
+    }
 
     res.status(200).json(progress);
 

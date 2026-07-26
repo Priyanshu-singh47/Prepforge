@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 
 const PlannerTask = require("../models/PlannerTask");
@@ -6,45 +7,52 @@ const PlannerTask = require("../models/PlannerTask");
 // GET /api/planner
 // ======================================
 const getPlanner = asyncHandler(async (req, res) => {
-
     const tasks = await PlannerTask.find({
         user: req.user._id,
-    }).sort({
-        dueDate: 1,
-    });
+    })
+        .populate("subject", "name shortName")
+        .sort({ dueDate: 1 });
 
     res.status(200).json(tasks);
-
 });
 
 // ======================================
 // POST /api/planner
 // ======================================
 const createPlannerTask = asyncHandler(async (req, res) => {
-
     const {
         title,
         description,
+        subject,
         dueDate,
+        priority,
     } = req.body;
 
     const task = await PlannerTask.create({
         user: req.user._id,
-        title,
-        description,
+        title: title.trim(),
+        description: description?.trim() || "",
+        subject: subject || null,
         dueDate,
+        priority: priority || "Medium",
     });
 
-    res.status(201).json(task);
+    const createdTask = await PlannerTask.findById(task._id)
+        .populate("subject", "name shortName");
 
+    res.status(201).json(createdTask);
 });
 
 // ======================================
 // PUT /api/planner/:id
 // ======================================
 const updatePlannerTask = asyncHandler(async (req, res) => {
-
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400);
+        throw new Error("Invalid task ID");
+    }
 
     const task = await PlannerTask.findOne({
         _id: id,
@@ -59,38 +67,60 @@ const updatePlannerTask = asyncHandler(async (req, res) => {
     const {
         title,
         description,
+        subject,
         dueDate,
-        completed,
+        priority,
+        status,
     } = req.body;
 
     if (title !== undefined) {
-        task.title = title;
+        task.title = title.trim();
     }
 
     if (description !== undefined) {
-        task.description = description;
+        task.description = description.trim();
+    }
+
+    if (subject !== undefined) {
+        task.subject = subject || null;
     }
 
     if (dueDate !== undefined) {
         task.dueDate = dueDate;
     }
 
-    if (completed !== undefined) {
-        task.completed = completed;
+    if (priority !== undefined) {
+        task.priority = priority;
+    }
+
+    if (status !== undefined) {
+        task.status = status;
+
+        if (status === "Completed") {
+            task.completedAt = new Date();
+        } else {
+            task.completedAt = null;
+        }
     }
 
     await task.save();
 
-    res.status(200).json(task);
+    const updatedTask = await PlannerTask.findById(task._id)
+        .populate("subject", "name shortName");
 
+    res.status(200).json(updatedTask);
 });
 
 // ======================================
 // DELETE /api/planner/:id
 // ======================================
 const deletePlannerTask = asyncHandler(async (req, res) => {
-
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400);
+        throw new Error("Invalid task ID");
+    }
 
     const task = await PlannerTask.findOne({
         _id: id,
@@ -107,7 +137,6 @@ const deletePlannerTask = asyncHandler(async (req, res) => {
     res.status(200).json({
         message: "Task deleted successfully",
     });
-
 });
 
 module.exports = {

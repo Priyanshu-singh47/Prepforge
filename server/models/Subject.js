@@ -9,6 +9,23 @@ const subjectSchema = new mongoose.Schema(
             unique: true,
         },
 
+        shortName: {
+            type: String,
+            required: true,
+            trim: true,
+            unique: true,
+        },
+
+        color: {
+            type: String,
+            default: "#3B82F6",
+        },
+
+        icon: {
+            type: String,
+            default: "BookOpen",
+        },
+
         order: {
             type: Number,
             required: true,

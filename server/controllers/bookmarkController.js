@@ -1,7 +1,10 @@
 const asyncHandler = require("express-async-handler");
 
-const QuestionProgress = require("../models/questionProgressModel");
+const QuestionProgress = require("../models/QuestionProgress");
 
+// ======================================
+// GET Bookmarked Questions
+// ======================================
 const getBookmarks = asyncHandler(async (req, res) => {
 
     const bookmarks = await QuestionProgress.find({
@@ -13,7 +16,11 @@ const getBookmarks = asyncHandler(async (req, res) => {
             select: "title difficulty topic",
             populate: {
                 path: "topic",
-                select: "name",
+                select: "name subject",
+                populate: {
+                    path: "subject",
+                    select: "name shortName",
+                },
             },
         })
         .lean();

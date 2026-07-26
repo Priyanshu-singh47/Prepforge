@@ -7,12 +7,10 @@ const Subject = require("../models/Subject");
 // @route   GET /api/resources
 // @access  Public
 const getAllResources = asyncHandler(async (req, res) => {
-
     const resources = await Resource.find()
-        .populate("subject", "name");
+        .populate("subject", "name shortName");
 
     res.status(200).json(resources);
-
 });
 
 // @desc    Get resources by subject
@@ -21,7 +19,10 @@ const getAllResources = asyncHandler(async (req, res) => {
 const getResourcesBySubject = asyncHandler(async (req, res) => {
 
     const subject = await Subject.findOne({
-        name: req.params.subjectName,
+        shortName: {
+            $regex: `^${req.params.subjectName}$`,
+            $options: "i",
+        },
     });
 
     if (!subject) {
@@ -34,7 +35,6 @@ const getResourcesBySubject = asyncHandler(async (req, res) => {
     });
 
     res.status(200).json(resources);
-
 });
 
 module.exports = {

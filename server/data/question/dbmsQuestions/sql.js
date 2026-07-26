@@ -1,9 +1,7 @@
-const sqlTopics = [
+const sql = [
     {
-        name: "SQL Basics",
-        description: "Introduction to SQL, commands, databases and tables.",
-        icon: "📘",
-        estimatedQuestions: 5,
+        title: "SQL Basics",
+        difficulty: "Easy",
         article: {
             name: "GeeksforGeeks SQL Tutorial",
             url: "https://www.geeksforgeeks.org/sql/sql-tutorial/",
@@ -12,110 +10,94 @@ const sqlTopics = [
     },
 
     {
-        name: "CRUD Operations",
-        description: "Create, Read, Update and Delete records.",
-        icon: "📝",
-        estimatedQuestions: 5,
+        title: "DDL, DML, DCL and TCL Commands",
+        difficulty: "Easy",
         article: {
-            name: "GeeksforGeeks SQL INSERT, UPDATE & DELETE",
+            name: "GeeksforGeeks SQL Commands",
             url: "https://www.geeksforgeeks.org/sql/sql-ddl-dql-dml-dcl-tcl-commands/",
         },
         order: 2,
     },
 
     {
-        name: "Filtering & Sorting",
-        description: "Retrieve filtered and sorted data using SQL clauses.",
-        icon: "🔍",
-        estimatedQuestions: 8,
+        title: "CRUD Operations",
+        difficulty: "Easy",
         article: {
-            name: "GeeksforGeeks SQL WHERE Clause",
-            url: "https://www.geeksforgeeks.org/sql/sql-where-clause/",
+            name: "GeeksforGeeks SQL Commands",
+            url: "https://www.geeksforgeeks.org/sql/sql-ddl-dql-dml-dcl-tcl-commands/",
         },
         order: 3,
     },
 
     {
-        name: "Aggregate Functions",
-        description: "COUNT, SUM, AVG, MIN, MAX and GROUP BY.",
-        icon: "📊",
-        estimatedQuestions: 5,
+        title: "WHERE Clause",
+        difficulty: "Easy",
         article: {
-            name: "GeeksforGeeks SQL Aggregate Functions",
-            url: "https://www.geeksforgeeks.org/sql/aggregate-functions-in-sql/",
+            name: "GeeksforGeeks SQL WHERE Clause",
+            url: "https://www.geeksforgeeks.org/sql/sql-where-clause/",
         },
         order: 4,
     },
 
     {
-        name: "HAVING & SQL Operators",
-        description: "HAVING clause, logical operators and CASE.",
-        icon: "⚙️",
-        estimatedQuestions: 4,
+        title: "ORDER BY Clause",
+        difficulty: "Easy",
         article: {
-            name: "GeeksforGeeks HAVING Clause",
-            url: "https://www.geeksforgeeks.org/sql/sql-having-clause-with-examples/",
+            name: "GeeksforGeeks ORDER BY",
+            url: "https://www.geeksforgeeks.org/sql/sql-order-by/",
         },
         order: 5,
     },
 
     {
-        name: "SQL Joins",
-        description: "Different types of joins used in relational databases.",
-        icon: "🔗",
-        estimatedQuestions: 7,
+        title: "GROUP BY and HAVING",
+        difficulty: "Medium",
         article: {
-            name: "GeeksforGeeks SQL Joins",
-            url: "https://www.geeksforgeeks.org/sql/sql-join-set-1-inner-left-right-and-full-joins/",
+            name: "GeeksforGeeks HAVING Clause",
+            url: "https://www.geeksforgeeks.org/sql/sql-having-clause-with-examples/",
         },
         order: 6,
     },
 
     {
-        name: "Set Operations",
-        description: "UNION, UNION ALL, INTERSECT and EXCEPT.",
-        icon: "➕",
-        estimatedQuestions: 4,
+        title: "Aggregate Functions",
+        difficulty: "Easy",
         article: {
-            name: "GeeksforGeeks SQL Set Operators",
-            url: "https://www.geeksforgeeks.org/sql/set-operators-in-sql/",
+            name: "GeeksforGeeks Aggregate Functions",
+            url: "https://www.geeksforgeeks.org/sql/aggregate-functions-in-sql/",
         },
         order: 7,
     },
 
     {
-        name: "Subqueries",
-        description: "Nested, correlated and EXISTS subqueries.",
-        icon: "📂",
-        estimatedQuestions: 3,
+        title: "SQL Joins",
+        difficulty: "Medium",
         article: {
-            name: "GeeksforGeeks SQL Subqueries",
-            url: "https://www.geeksforgeeks.org/sql/sql-subquery/",
+            name: "GeeksforGeeks SQL Joins",
+            url: "https://www.geeksforgeeks.org/sql/sql-join-set-1-inner-left-right-and-full-joins/",
         },
         order: 8,
     },
 
     {
-        name: "Advanced SQL",
-        description: "Views, Indexes, Stored Procedures, Triggers and Transactions.",
-        icon: "🚀",
-        estimatedQuestions: 5,
+        title: "Subqueries",
+        difficulty: "Medium",
         article: {
-            name: "GeeksforGeeks SQL Tutorial",
-            url: "https://www.geeksforgeeks.org/sql/sql-tutorial/",
+            name: "GeeksforGeeks SQL Subqueries",
+            url: "https://www.geeksforgeeks.org/sql/sql-subquery/",
         },
         order: 9,
     },
 
     {
-        name: "SQL Constraints",
-        description: "NOT NULL, UNIQUE, CHECK, DEFAULT and AUTO_INCREMENT.",
-        icon: "🛡️",
-        estimatedQuestions: 4,
+        title: "Views, Indexes and Transactions",
+        difficulty: "Hard",
         article: {
-            name: "GeeksforGeeks SQL Constraints",
-            url: "https://www.geeksforgeeks.org/sql/sql-constraints/",
+            name: "GeeksforGeeks SQL Tutorial",
+            url: "https://www.geeksforgeeks.org/sql/sql-tutorial/",
         },
         order: 10,
     },
 ];
+
+module.exports = sql;
