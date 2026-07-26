@@ -6,7 +6,7 @@ function TopicCard({ topic }) {
 
   return (
     <Link
-      to={`/subjects/${subjectId}/topics/${topic.id}`}
+      to={`/subjects/${subjectId}/topics/${topic._id}`}
       className="group block rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md"
     >
       <h3 className="text-lg font-semibold text-gray-900">
@@ -31,13 +31,11 @@ function TopicCard({ topic }) {
 
       <div className="mt-4">
         <div className="mb-2 flex items-center justify-between">
-
           <span className="text-xs text-gray-500">
             Progress
           </span>
 
           <div className="flex items-center gap-4">
-
             <span className="text-sm font-semibold text-gray-700">
               {topic.progress}%
             </span>
@@ -46,9 +44,7 @@ function TopicCard({ topic }) {
               Continue
               <ArrowRight size={16} />
             </span>
-
           </div>
-
         </div>
 
         <div className="h-2 rounded-full bg-gray-200">

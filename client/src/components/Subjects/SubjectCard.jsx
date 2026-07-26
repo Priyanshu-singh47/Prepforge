@@ -1,24 +1,51 @@
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Code2,
+  Database,
+  Network,
+  Boxes,
+  MonitorCog,
+  LayoutDashboard,
+  Brain,
+  BookOpen,
+} from "lucide-react";
+
 import { Link } from "react-router-dom";
 
+const iconMap = {
+  Code2,
+  Database,
+  Network,
+  Boxes,
+  MonitorCog,
+  LayoutDashboard,
+  Brain,
+  BookOpen,
+};
+
 function SubjectCard({ subject }) {
-  const Icon = subject.icon;
+  const Icon = iconMap[subject.icon] || BookOpen;
 
   return (
     <Link
-      to={`/subjects/${subject.id}`}
+      to={`/subjects/${subject._id}`}
       className="group block rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md"
     >
       {/* Header */}
 
       <div className="flex items-start">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-xl border border-white/70 shadow-sm ${subject.color}`}
+          className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/70 shadow-sm"
+          style={{
+            backgroundColor: `${subject.color}20`,
+          }}
         >
           <Icon
             size={24}
             strokeWidth={2.2}
-            className={subject.iconColor}
+            style={{
+              color: subject.color,
+            }}
           />
         </div>
       </div>
@@ -82,9 +109,10 @@ function SubjectCard({ subject }) {
 
         <div className="h-2 rounded-full bg-gray-200">
           <div
-            className={`h-2 rounded-full ${subject.progressColor} transition-all duration-500`}
+            className="h-2 rounded-full transition-all duration-500"
             style={{
               width: `${subject.progress}%`,
+              backgroundColor: subject.color,
             }}
           />
         </div>

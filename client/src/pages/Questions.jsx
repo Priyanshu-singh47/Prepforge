@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { topicsData } from "../mock/topicsData";
-import { questionsData } from "../mock/questionsData";
+import api from "../services/api";
 
 import QuestionList from "../components/Questions/QuestionList";
 import QuestionSearch from "../components/Questions/QuestionSearch";
@@ -11,32 +10,67 @@ import QuestionFilter from "../components/Questions/QuestionFilter";
 function Questions() {
   const { subjectId, topicId } = useParams();
 
-  const topic = topicsData[subjectId]?.find(
-    (item) => item.id === topicId
-  );
-
-  const questions = questionsData[subjectId]?.[topicId] || [];
+  const [questions, setQuestions] = useState([]);
+  const [topic, setTopic] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("All");
 
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const [questionRes, topicRes] = await Promise.all([
+          api.get(`/questions/topic/${topicId}`),
+          api.get(`/subjects/${subjectId}/topics`),
+        ]);
+
+        setQuestions(questionRes.data);
+
+        const currentTopic = topicRes.data.topics.find(
+          (item) => item._id === topicId
+        );
+
+        setTopic(currentTopic);
+      } catch (error) {
+        console.error("Failed to fetch questions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, [subjectId, topicId]);
+
   const filteredQuestions = useMemo(() => {
     let filtered = questions.filter((question) =>
-      question.title
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
+      question.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (filter === "Solved") {
-      filtered = filtered.filter((question) => question.solved);
+      filtered = filtered.filter(
+        (question) => question.status === "Done"
+      );
     }
 
     if (filter === "Unsolved") {
-      filtered = filtered.filter((question) => !question.solved);
+      filtered = filtered.filter(
+        (question) => question.status !== "Done"
+      );
     }
 
     return filtered;
   }, [questions, searchTerm, filter]);
+
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <p className="text-lg font-medium text-gray-500">
+          Loading questions...
+        </p>
+      </div>
+    );
+  }
 
   if (!topic) {
     return (
@@ -55,7 +89,9 @@ function Questions() {
     );
   }
 
-  const solved = questions.filter((q) => q.solved).length;
+  const solved = questions.filter(
+    (q) => q.status === "Done"
+  ).length;
 
   const progress =
     questions.length === 0

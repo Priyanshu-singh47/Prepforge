@@ -21,7 +21,7 @@ function TopicList({ topics }) {
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
       {topics.map((topic) => (
         <TopicCard
-          key={topic.id}
+          key={topic._id}
           topic={topic}
         />
       ))}

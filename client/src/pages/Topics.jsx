@@ -1,26 +1,43 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+
+import api from "../services/api";
 
 import TopicList from "../components/Topics/TopicList";
 import TopicSearch from "../components/Topics/TopicSearch";
 
-import { subjectsData } from "../mock/subjectsData";
-import { topicsData } from "../mock/topicsData";
-
 function Topics() {
   const { subjectId } = useParams();
 
+  const [subject, setSubject] = useState(null);
+  const [topics, setTopics] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const subject = subjectsData.find(
-    (item) => item.id === subjectId
-  );
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const { data } = await api.get(
+          `/subjects/${subjectId}/topics`
+        );
 
-  const topics = useMemo(() => {
+        setSubject(data.subject);
+        setTopics(data.topics);
+      } catch (error) {
+        console.error("Failed to fetch topics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopics();
+  }, [subjectId]);
+
+  const filteredTopics = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
-    return (topicsData[subjectId] || [])
+    return topics
       .filter((topic) => {
         if (!query) return true;
 
@@ -33,7 +50,17 @@ function Topics() {
 
         return b.solved - a.solved;
       });
-  }, [searchTerm, subjectId]);
+  }, [topics, searchTerm]);
+
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <p className="text-lg font-medium text-gray-500">
+          Loading topics...
+        </p>
+      </div>
+    );
+  }
 
   if (!subject) {
     return (
@@ -54,7 +81,6 @@ function Topics() {
 
   return (
     <div className="space-y-8">
-
       {/* Back */}
 
       <Link
@@ -68,32 +94,25 @@ function Topics() {
       {/* Header */}
 
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-
         <div>
-
           <h1 className="text-3xl font-bold text-gray-900">
             {subject.shortName}
           </h1>
 
           <p className="mt-2 text-gray-500">
-            {subject.topics} Topics •{" "}
-            {subject.totalQuestions} Questions •{" "}
-            {subject.progress}% Completed
+            {filteredTopics.length} Topics
           </p>
-
         </div>
 
         <TopicSearch
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
         />
-
       </div>
 
       {/* Topics */}
 
-      <TopicList topics={topics} />
-
+      <TopicList topics={filteredTopics} />
     </div>
   );
 }

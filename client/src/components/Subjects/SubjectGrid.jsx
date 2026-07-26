@@ -21,7 +21,7 @@ function SubjectGrid({ subjects }) {
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {subjects.map((subject) => (
         <SubjectCard
-          key={subject.id}
+          key={subject._id}
           subject={subject}
         />
       ))}

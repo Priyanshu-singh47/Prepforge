@@ -21,7 +21,7 @@ function QuestionList({ questions }) {
     <div className="space-y-3">
       {questions.map((question) => (
         <QuestionCard
-          key={question.id}
+          key={question._id}
           question={question}
         />
       ))}
