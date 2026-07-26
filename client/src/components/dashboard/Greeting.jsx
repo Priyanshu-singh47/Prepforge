@@ -9,6 +9,8 @@ function Greeting({ dashboardData }) {
     greeting = "Good Evening";
   }
 
+  const streak = dashboardData?.user?.currentStreak || 0;
+
   return (
     <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md">
       <div>
@@ -23,7 +25,7 @@ function Greeting({ dashboardData }) {
 
       <div className="rounded-full bg-orange-100 px-4 py-2 transition-all duration-300 hover:bg-orange-200">
         <span className="text-sm font-semibold text-orange-600">
-          🔥 Keep Going!
+          🔥 {streak} Day{streak !== 1 ? "s" : ""} Streak
         </span>
       </div>
     </div>

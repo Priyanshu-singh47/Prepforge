@@ -1,4 +1,9 @@
-import { ChevronRight, BookOpen, Bookmark, FileText, Library } from "lucide-react";
+import {
+  ChevronRight,
+  BookOpen,
+  Bookmark,
+  FileText,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function QuickLinks() {
@@ -20,15 +25,10 @@ function QuickLinks() {
       icon: <FileText size={18} />,
       path: "/notes",
     },
-    {
-      title: "Resources",
-      icon: <Library size={18} />,
-      path: "/resources",
-    },
   ];
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm h-full">
+    <div className="flex w-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold text-gray-900">
         Quick Links
       </h2>

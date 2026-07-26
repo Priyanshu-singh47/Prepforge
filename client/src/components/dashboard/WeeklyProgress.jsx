@@ -1,73 +1,79 @@
 import {
   ResponsiveContainer,
-  RadialBarChart,
-  RadialBar,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
 } from "recharts";
 
 function WeeklyProgress({ dashboardData }) {
+  const weeklyData = dashboardData?.weeklyActivity || [];
 
-  const percentage =
-    dashboardData?.statistics?.completionPercentage || 0;
-
-  const data = [
-    {
-      name: "Completion",
-      value: percentage,
-    },
-  ];
+  const totalSolved = weeklyData.reduce(
+    (sum, day) => sum + day.solved,
+    0
+  );
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Weekly Activity
+          </h2>
 
-      <div className="mb-2 flex items-center justify-between">
+          <p className="text-sm text-gray-500">
+            Questions solved this week
+          </p>
+        </div>
 
-        <h2 className="text-lg font-semibold text-gray-900">
-          Overall Progress
-        </h2>
-
-        <span className="text-lg font-bold text-blue-600">
-          {percentage}%
+        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-600">
+          {totalSolved} Solved
         </span>
-
       </div>
 
-      <div className="h-52">
-
+      <div className="h-56">
         <ResponsiveContainer width="100%" height="100%">
-
-          <RadialBarChart
-            cx="50%"
-            cy="50%"
-            innerRadius="70%"
-            outerRadius="100%"
-            barSize={18}
-            data={data}
-            startAngle={90}
-            endAngle={-270}
+          <BarChart
+            data={weeklyData}
+            margin={{
+              top: 10,
+              right: 10,
+              left: -20,
+              bottom: 0,
+            }}
           >
-
-            <RadialBar
-              dataKey="value"
-              fill="#2563eb"
-              cornerRadius={10}
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="#e5e7eb"
             />
 
-            <text
-              x="50%"
-              y="50%"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              className="fill-gray-900 text-xl font-bold"
-            >
-              {percentage}%
-            </text>
+            <XAxis
+              dataKey="day"
+              tickLine={false}
+              axisLine={false}
+            />
 
-          </RadialBarChart>
+            <YAxis
+              allowDecimals={false}
+              tickLine={false}
+              axisLine={false}
+            />
 
+            <Tooltip />
+
+            <Bar
+              dataKey="solved"
+              fill="#2563eb"
+              radius={[6, 6, 0, 0]}
+              maxBarSize={35}
+            />
+          </BarChart>
         </ResponsiveContainer>
-
       </div>
-
     </div>
   );
 }

@@ -8,7 +8,7 @@ function ContinueStudying({ dashboardData }) {
 
   if (!task) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="flex w-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-gray-900">
           Continue Studying
         </h2>
@@ -21,7 +21,7 @@ function ContinueStudying({ dashboardData }) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <div className="flex w-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-gray-900">
           Continue Studying
@@ -32,7 +32,7 @@ function ContinueStudying({ dashboardData }) {
         </p>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-1 items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-900">
             {task.title}

@@ -35,29 +35,23 @@ function Dashboard() {
   }, [location.key]);
 
   if (loading) {
-    return (
-      <p className="mt-10 text-center">
-        Loading...
-      </p>
-    );
+    return <p className="mt-10 text-center">Loading...</p>;
   }
 
   return (
     <div className="space-y-4">
       <Greeting dashboardData={dashboardData} />
 
-      {/* Top Section */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-10">
-        <div className="lg:col-span-7">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-10 items-stretch">
+        <div className="flex lg:col-span-7">
           <ContinueStudying dashboardData={dashboardData} />
         </div>
 
-        <div className="lg:col-span-3">
+        <div className="flex lg:col-span-3">
           <QuickLinks />
         </div>
       </div>
 
-      {/* Bottom Section */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Statistics dashboardData={dashboardData} />
 
