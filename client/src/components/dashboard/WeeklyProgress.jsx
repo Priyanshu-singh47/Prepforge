@@ -1,21 +1,20 @@
 import {
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
+  RadialBarChart,
+  RadialBar,
 } from "recharts";
 
-import { dashboardData } from "../../mock/dashboardData";
+function WeeklyProgress({ dashboardData }) {
 
-function WeeklyProgress() {
-  const data = dashboardData.weeklyProgress;
+  const percentage =
+    dashboardData?.statistics?.completionPercentage || 0;
 
-  const totalHours = data.reduce(
-    (sum, day) => sum + day.hours,
-    0
-  );
+  const data = [
+    {
+      name: "Completion",
+      value: percentage,
+    },
+  ];
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md">
@@ -23,51 +22,47 @@ function WeeklyProgress() {
       <div className="mb-2 flex items-center justify-between">
 
         <h2 className="text-lg font-semibold text-gray-900">
-          Weekly Progress
+          Overall Progress
         </h2>
 
         <span className="text-lg font-bold text-blue-600">
-          {totalHours}h
+          {percentage}%
         </span>
 
       </div>
 
-      <div className="h-32">
+      <div className="h-52">
 
         <ResponsiveContainer width="100%" height="100%">
 
-          <BarChart
+          <RadialBarChart
+            cx="50%"
+            cy="50%"
+            innerRadius="70%"
+            outerRadius="100%"
+            barSize={18}
             data={data}
-            margin={{
-              top: 0,
-              right: 0,
-              left: -25,
-              bottom: 0,
-            }}
+            startAngle={90}
+            endAngle={-270}
           >
 
-            <XAxis
-              dataKey="day"
-              tickLine={false}
-              axisLine={false}
-              fontSize={11}
-            />
-
-            <YAxis hide />
-
-            <Tooltip
-              cursor={{ fill: "#f3f4f6" }}
-            />
-
-            <Bar
-              dataKey="hours"
-              radius={[8, 8, 0, 0]}
+            <RadialBar
+              dataKey="value"
               fill="#2563eb"
-              barSize={30}
-              animationDuration={900}
+              cornerRadius={10}
             />
 
-          </BarChart>
+            <text
+              x="50%"
+              y="50%"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="fill-gray-900 text-xl font-bold"
+            >
+              {percentage}%
+            </text>
+
+          </RadialBarChart>
 
         </ResponsiveContainer>
 

@@ -1,38 +1,37 @@
 import {
   BookOpen,
   CircleHelp,
+  Bookmark,
   Clock3,
-  CalendarDays,
 } from "lucide-react";
 
-import { dashboardData } from "../../mock/dashboardData";
+function Statistics({ dashboardData }) {
 
-function Statistics() {
-  const stats = dashboardData.statistics;
+  const stats = dashboardData?.statistics;
 
   const statCards = [
     {
       icon: BookOpen,
       title: "Subjects",
-      value: `${stats.subjectsCompleted}/${stats.totalSubjects}`,
+      value: stats.totalSubjects,
       color: "bg-blue-100 text-blue-600",
     },
     {
       icon: CircleHelp,
-      title: "Questions",
-      value: `${stats.questionsSolved}/${stats.totalQuestions}`,
+      title: "Solved",
+      value: `${stats.solved}/${stats.totalQuestions}`,
       color: "bg-green-100 text-green-600",
     },
     {
-      icon: Clock3,
-      title: "Study Time",
-      value: `${stats.totalStudyHours} hrs`,
+      icon: Bookmark,
+      title: "Bookmarks",
+      value: stats.bookmarked,
       color: "bg-orange-100 text-orange-600",
     },
     {
-      icon: CalendarDays,
-      title: "Today",
-      value: stats.todayStudyHours,
+      icon: Clock3,
+      title: "Review Later",
+      value: stats.reviewLater,
       color: "bg-purple-100 text-purple-600",
     },
   ];

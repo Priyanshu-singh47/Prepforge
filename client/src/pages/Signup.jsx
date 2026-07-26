@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import api from "../services/api";
+
 import AuthLayout from "../components/Auth/AuthLayout";
 import SignupForm from "../components/Auth/SignupForm";
 
@@ -10,18 +13,24 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log({
-      name,
-      email,
-      password,
-    });
+    try {
+      const { data } = await api.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
 
-    // TODO: Signup API
+      alert(data.message);
 
-    navigate("/login");
+      navigate("/login");
+    } catch (error) {
+      alert(
+        error.response?.data?.message || "Signup failed"
+      );
+    }
   };
 
   return (
