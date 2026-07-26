@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function ContinueStudying({ dashboardData }) {
+  const navigate = useNavigate();
 
   const task = dashboardData?.planner?.[0];
 
@@ -20,7 +22,6 @@ function ContinueStudying({ dashboardData }) {
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
-
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-gray-900">
           Continue Studying
@@ -32,9 +33,7 @@ function ContinueStudying({ dashboardData }) {
       </div>
 
       <div className="flex items-center justify-between">
-
         <div>
-
           <h3 className="text-lg font-semibold text-gray-900">
             {task.title}
           </h3>
@@ -46,19 +45,16 @@ function ContinueStudying({ dashboardData }) {
           <span className="mt-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600">
             {task.priority}
           </span>
-
         </div>
 
-        <button className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700">
-
+        <button
+          onClick={() => navigate("/planner")}
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-700"
+        >
           Open Planner
-
           <ArrowRight size={16} />
-
         </button>
-
       </div>
-
     </div>
   );
 }

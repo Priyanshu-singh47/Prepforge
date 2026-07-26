@@ -25,6 +25,16 @@ function Questions() {
           api.get(`/subjects/${subjectId}/topics`),
         ]);
 
+        console.log("==================================");
+        console.log("Questions API Response");
+        console.log(questionRes.data);
+
+        if (questionRes.data.length > 0) {
+          console.log("First Question:");
+          console.log(questionRes.data[0]);
+        }
+        console.log("==================================");
+
         setQuestions(questionRes.data);
 
         const currentTopic = topicRes.data.topics.find(
@@ -33,7 +43,7 @@ function Questions() {
 
         setTopic(currentTopic);
       } catch (error) {
-        console.error("Failed to fetch questions:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -44,7 +54,9 @@ function Questions() {
 
   const filteredQuestions = useMemo(() => {
     let filtered = questions.filter((question) =>
-      question.title.toLowerCase().includes(searchTerm.toLowerCase())
+      question.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
     );
 
     if (filter === "Solved") {
@@ -114,7 +126,8 @@ function Questions() {
           </h1>
 
           <p className="mt-2 text-gray-500">
-            {questions.length} Questions • {solved} Solved • {progress}% Completed
+            {questions.length} Questions • {solved} Solved • {progress}%
+            Completed
           </p>
         </div>
 

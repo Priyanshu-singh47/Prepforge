@@ -6,7 +6,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 
 function QuestionCard({ question }) {
-  const { subjectId, topicId } = useParams();
+  const { subjectId, topicId } =useParams();
 
   const badgeColor = {
     Easy: "bg-green-100 text-green-700",
@@ -16,11 +16,11 @@ function QuestionCard({ question }) {
 
   return (
     <Link
-      to={`/subjects/${subjectId}/topics/${topicId}/questions/${question.id}`}
+      to={`/subjects/${subjectId}/topics/${topicId}/questions/${question._id}`}
       className="group flex items-center justify-between rounded-xl border border-gray-200 bg-white px-6 py-3 transition-colors duration-200 hover:bg-gray-50"
     >
       <div className="flex items-center gap-4">
-        {question.solved ? (
+        {question.status === "Done" ? (
           <CheckCircle2
             size={22}
             className="text-green-600"
@@ -39,7 +39,10 @@ function QuestionCard({ question }) {
 
       <div className="flex items-center gap-4">
         <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeColor[question.difficulty]}`}
+          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            badgeColor[question.difficulty] ||
+            "bg-gray-100 text-gray-700"
+          }`}
         >
           {question.difficulty}
         </span>

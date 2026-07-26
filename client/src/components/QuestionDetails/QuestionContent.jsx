@@ -1,55 +1,65 @@
 function QuestionContent({ question }) {
   return (
     <div className="space-y-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      {/* Description */}
+
+      {/* Pattern */}
 
       <section>
         <h2 className="mb-3 text-lg font-semibold text-gray-900">
-          Description
+          Pattern
         </h2>
 
         <p className="leading-7 text-gray-600">
-          {question.description}
+          {question.pattern || "No pattern available."}
         </p>
       </section>
 
-      {/* Topics */}
+      {/* Article */}
 
       <section>
         <h2 className="mb-3 text-lg font-semibold text-gray-900">
-          Topics
+          Article
         </h2>
 
-        <div className="flex flex-wrap gap-2">
-          {question.topics.map((topic) => (
-            <span
-              key={topic}
-              className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700"
-            >
-              {topic}
-            </span>
-          ))}
-        </div>
+        {question.article ? (
+          <a
+            href={question.article.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            {question.article.name}
+          </a>
+        ) : (
+          <p className="text-gray-500">
+            No article available.
+          </p>
+        )}
       </section>
 
-      {/* Companies */}
+      {/* Practice */}
 
       <section>
         <h2 className="mb-3 text-lg font-semibold text-gray-900">
-          Companies
+          Practice
         </h2>
 
-        <div className="flex flex-wrap gap-2">
-          {question.companies.map((company) => (
-            <span
-              key={company}
-              className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700"
-            >
-              {company}
-            </span>
-          ))}
-        </div>
+        {question.practice ? (
+          <a
+            href={question.practice.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            {question.practice.name}
+          </a>
+        ) : (
+          <p className="text-gray-500">
+            No practice link available.
+          </p>
+        )}
       </section>
+
     </div>
   );
 }

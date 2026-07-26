@@ -3,6 +3,7 @@ export { default as Subjects } from "./Subjects";
 export { default as Topics } from "./Topics";
 export { default as Questions } from "./Questions";
 export { default as QuestionDetails } from "./QuestionDetails";
+export { default as Resources } from "./Resources";
 export { default as Planner } from "./Planner";
 export { default as Progress } from "./Progress";
 export { default as Notes } from "./Notes";

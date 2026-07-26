@@ -1,13 +1,67 @@
 import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 
-function AddTaskModal({ open, onClose }) {
+import api from "../../services/api";
+
+function AddTaskModal({ open, onClose, refreshTasks }) {
+  const [subjects, setSubjects] = useState([]);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    subject: "",
+    dueDate: "",
+    priority: "Medium",
+  });
+
+  useEffect(() => {
+    if (open) {
+      fetchSubjects();
+    }
+  }, [open]);
+
+  const fetchSubjects = async () => {
+    try {
+      const { data } = await api.get("/subjects");
+      setSubjects(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.title.trim()) return;
+
+    try {
+      await api.post("/planner", formData);
+
+      setFormData({
+        title: "",
+        description: "",
+        subject: "",
+        dueDate: "",
+        priority: "Medium",
+      });
+
+      refreshTasks();
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        {/* Header */}
-
+      <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-semibold text-gray-900">
             Add Study Task
@@ -15,80 +69,77 @@ function AddTaskModal({ open, onClose }) {
 
           <button
             onClick={onClose}
-            className="rounded-lg p-1 transition-colors hover:bg-gray-100"
+            className="rounded-lg p-1 hover:bg-gray-100"
           >
             <X size={24} />
           </button>
         </div>
 
-        {/* Form */}
-
         <div className="space-y-4">
-          {/* Task */}
-
           <input
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
             type="text"
-            placeholder="Enter task name"
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition-colors focus:border-blue-500"
+            placeholder="Task title"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
           />
 
-          {/* Subject */}
-
-          <select className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-700 outline-none transition-colors focus:border-blue-500">
+          <select
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+          >
             <option value="">Select Subject</option>
 
-            <option>DSA</option>
-            <option>DBMS</option>
-            <option>OOP</option>
-            <option>Operating System</option>
-            <option>Computer Networks</option>
-            <option>System Design</option>
-            <option>Aptitude</option>
+            {subjects.map((subject) => (
+              <option key={subject._id} value={subject._id}>
+                {subject.shortName}
+              </option>
+            ))}
           </select>
 
-          {/* Date */}
+          <textarea
+            rows={3}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Description (optional)"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500 resize-none"
+          />
 
           <input
             type="date"
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition-colors focus:border-blue-500"
+            name="dueDate"
+            value={formData.dueDate}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
           />
 
-          {/* Time */}
-
           <select
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-700 outline-none transition-colors focus:border-blue-500"
-            defaultValue=""
+            name="priority"
+            value={formData.priority}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
           >
-            <option value="" disabled>
-              Select Time
-            </option>
-
-            {Array.from({ length: 48 }, (_, i) => {
-              const hour24 = Math.floor(i / 2);
-              const minute = i % 2 === 0 ? "00" : "30";
-
-              const period = hour24 >= 12 ? "PM" : "AM";
-              const hour12 = hour24 % 12 || 12;
-
-              return (
-                <option key={i}>
-                  {`${hour12}:${minute} ${period}`}
-                </option>
-              );
-            })}
+            <option value="Low">Low Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="High">High Priority</option>
           </select>
-
-          {/* Buttons */}
 
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={onClose}
-              className="rounded-xl border border-gray-300 px-5 py-2.5 font-medium transition-colors hover:bg-gray-100"
+              className="rounded-xl border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-100"
             >
               Cancel
             </button>
 
-            <button className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-700">
+            <button
+              onClick={handleSubmit}
+              className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700"
+            >
               Add Task
             </button>
           </div>

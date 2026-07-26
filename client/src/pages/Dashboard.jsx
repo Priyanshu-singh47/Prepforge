@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import api from "../services/api";
 
 import {
   Greeting,
   ContinueStudying,
+  QuickLinks,
   Statistics,
   WeeklyProgress,
 } from "../components/dashboard";
@@ -13,31 +15,49 @@ function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const location = useLocation();
+
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
+        setLoading(true);
+
         const { data } = await api.get("/dashboard");
         setDashboardData(data);
       } catch (error) {
-        console.error(error);
+        console.error("Failed to fetch dashboard:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboard();
-  }, []);
+  }, [location.key]);
 
   if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return (
+      <p className="mt-10 text-center">
+        Loading...
+      </p>
+    );
   }
 
   return (
     <div className="space-y-4">
       <Greeting dashboardData={dashboardData} />
 
-      <ContinueStudying dashboardData={dashboardData} />
+      {/* Top Section */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-10">
+        <div className="lg:col-span-7">
+          <ContinueStudying dashboardData={dashboardData} />
+        </div>
 
+        <div className="lg:col-span-3">
+          <QuickLinks />
+        </div>
+      </div>
+
+      {/* Bottom Section */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Statistics dashboardData={dashboardData} />
 

@@ -8,6 +8,7 @@ import {
   Topics,
   Questions,
   QuestionDetails,
+  Resources,
   Planner,
   Progress,
   Notes,
@@ -37,6 +38,12 @@ function App() {
         <Route
           path="/subjects/:subjectId"
           element={<Topics />}
+        />
+
+        {/* Resource Hub */}
+        <Route
+          path="/subjects/:subjectId/resources"
+          element={<Resources />}
         />
 
         <Route

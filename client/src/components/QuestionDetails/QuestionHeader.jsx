@@ -26,7 +26,10 @@ function QuestionHeader({ question }) {
         </h1>
 
         <span
-          className={`rounded-full px-3 py-1 text-sm font-semibold ${badgeColor[question.difficulty]}`}
+          className={`rounded-full px-3 py-1 text-sm font-semibold ${
+            badgeColor[question.difficulty] ||
+            "bg-gray-100 text-gray-700"
+          }`}
         >
           {question.difficulty}
         </span>

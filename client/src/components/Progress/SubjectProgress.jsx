@@ -5,33 +5,51 @@ function SubjectProgress({ subjects }) {
         Subject Progress
       </h2>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {subjects.map((subject) => (
-          <div
-            key={subject.id}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2.5"
-          >
-            <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-800">
-                {subject.name}
-              </h3>
+      {subjects.length === 0 ? (
+        <div className="flex h-32 items-center justify-center">
+          <p className="text-sm text-gray-500">
+            No progress available yet.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {subjects.map((subject) => (
+            <div
+              key={subject.shortName}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-3"
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {subject.shortName}
+                  </h3>
 
-              <span className="text-xs font-semibold text-blue-600">
-                {subject.progress}%
-              </span>
-            </div>
+                  <p className="text-xs text-gray-500">
+                    {subject.completed} / {subject.total} Completed
+                  </p>
+                </div>
 
-            <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
-              <div
-                className="h-1.5 rounded-full bg-blue-600 transition-all duration-300"
-                style={{
-                  width: `${subject.progress}%`,
-                }}
-              />
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: subject.color }}
+                >
+                  {subject.percentage}%
+                </span>
+              </div>
+
+              <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                <div
+                  className="h-2 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${subject.percentage}%`,
+                    backgroundColor: subject.color,
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

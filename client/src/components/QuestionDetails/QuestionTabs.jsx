@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 function QuestionTabs({ question }) {
-  const [activeTab, setActiveTab] = useState("Description");
+  const [activeTab, setActiveTab] = useState("Resources");
 
-  const tabs = ["Description", "Notes"];
+  const tabs = ["Resources", "Notes"];
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -24,63 +24,91 @@ function QuestionTabs({ question }) {
       </div>
 
       <div className="p-6">
-        {activeTab === "Description" && (
-          <div className="space-y-8">
-            <section>
-              <h2 className="mb-3 text-lg font-semibold text-gray-900">
-                Description
-              </h2>
+        {activeTab === "Resources" && (
+          <div className="space-y-6">
+            {question.pattern && (
+              <section>
+                <h2 className="mb-2 text-lg font-semibold text-gray-900">
+                  Pattern
+                </h2>
 
-              <p className="leading-7 text-gray-600">
-                {question.description}
-              </p>
-            </section>
+                <p className="text-gray-600">{question.pattern}</p>
+              </section>
+            )}
 
-            <section>
-              <h2 className="mb-3 text-lg font-semibold text-gray-900">
-                Topics
-              </h2>
+            {question.source?.url && (
+              <section>
+                <h2 className="mb-2 text-lg font-semibold text-gray-900">
+                  Source
+                </h2>
 
-              <div className="flex flex-wrap gap-2">
-                {question.topics.map((topic) => (
-                  <span
-                    key={topic}
-                    className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700"
-                  >
-                    {topic}
-                  </span>
-                ))}
-              </div>
-            </section>
+                <a
+                  href={question.source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {question.source.name}
+                </a>
+              </section>
+            )}
 
-            <section>
-              <h2 className="mb-3 text-lg font-semibold text-gray-900">
-                Companies
-              </h2>
+            {question.article?.url && (
+              <section>
+                <h2 className="mb-2 text-lg font-semibold text-gray-900">
+                  Article
+                </h2>
 
-              <div className="flex flex-wrap gap-2">
-                {question.companies.map((company) => (
-                  <span
-                    key={company}
-                    className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700"
-                  >
-                    {company}
-                  </span>
-                ))}
-              </div>
-            </section>
+                <a
+                  href={question.article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {question.article.name}
+                </a>
+              </section>
+            )}
+
+            {question.practice?.url && (
+              <section>
+                <h2 className="mb-2 text-lg font-semibold text-gray-900">
+                  Practice
+                </h2>
+
+                <a
+                  href={question.practice.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {question.practice.name}
+                </a>
+              </section>
+            )}
+
+            {!question.source?.url &&
+              !question.article?.url &&
+              !question.practice?.url &&
+              !question.pattern && (
+                <p className="text-gray-500">
+                  No resources available.
+                </p>
+              )}
           </div>
         )}
 
         {activeTab === "Notes" && (
-          <div className="py-10 text-center">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Notes
-            </h3>
+          <div>
+            <h2 className="mb-3 text-lg font-semibold text-gray-900">
+              Personal Notes
+            </h2>
 
-            <p className="mt-2 text-gray-500">
-              Personal notes feature coming soon.
-            </p>
+            <div className="min-h-40 rounded-lg border border-gray-200 bg-gray-50 p-4 text-gray-700">
+              {question.notes?.trim()
+                ? question.notes
+                : "No notes added yet."}
+            </div>
           </div>
         )}
       </div>

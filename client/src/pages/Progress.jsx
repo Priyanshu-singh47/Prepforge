@@ -1,11 +1,41 @@
+import { useEffect, useState } from "react";
+
+import api from "../services/api";
+
 import SubjectProgress from "../components/Progress/SubjectProgress";
 import DifficultyProgress from "../components/Progress/DifficultyProgress";
 import OverallProgress from "../components/Progress/OverallProgress";
 import WeeklyActivity from "../components/Progress/WeeklyActivity";
 
-import { progressData } from "../mock/progressData";
-
 function Progress() {
+  const [progressData, setProgressData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProgress = async () => {
+    try {
+      const { data } = await api.get("/progress/stats");
+      setProgressData(data);
+    } catch (error) {
+      console.error("Failed to fetch progress:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProgress();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-80 items-center justify-center">
+        <p className="text-lg text-gray-500">
+          Loading progress...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -23,18 +53,18 @@ function Progress() {
       {/* Subject Progress */}
 
       <SubjectProgress
-        subjects={progressData.subjects}
+        subjects={progressData.subjectProgress}
       />
 
       {/* Bottom Cards */}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <DifficultyProgress
-          difficulty={progressData.difficulty}
+          difficulty={progressData.difficultyProgress}
         />
 
         <OverallProgress
-          overall={progressData.overall}
+          overall={progressData}
         />
 
         <WeeklyActivity

@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { questionDetailsData } from "../mock/questionDetailsData";
+import api from "../services/api";
 
 import QuestionHeader from "../components/QuestionDetails/QuestionHeader";
 import QuestionTabs from "../components/QuestionDetails/QuestionTabs";
@@ -9,8 +10,36 @@ import QuestionActions from "../components/QuestionDetails/QuestionActions";
 function QuestionDetails() {
   const { subjectId, topicId, questionId } = useParams();
 
-  const question =
-    questionDetailsData[subjectId]?.[topicId]?.[questionId];
+  const [question, setQuestion] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      try {
+        const { data } = await api.get(
+          `/questions/${questionId}`
+        );
+
+        setQuestion(data);
+      } catch (error) {
+        console.error("Failed to fetch question:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestion();
+  }, [questionId]);
+
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <p className="text-lg font-medium text-gray-500">
+          Loading question...
+        </p>
+      </div>
+    );
+  }
 
   if (!question) {
     return (

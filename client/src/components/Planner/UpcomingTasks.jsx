@@ -1,4 +1,30 @@
-function UpcomingTasks({ tasks }) {
+import { Trash2 } from "lucide-react";
+
+import api from "../../services/api";
+
+function UpcomingTasks({ tasks, refreshTasks }) {
+  const completeTask = async (task) => {
+    try {
+      await api.put(`/planner/${task._id}`, {
+        status: "Completed",
+      });
+
+      refreshTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      await api.delete(`/planner/${id}`);
+
+      refreshTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold text-gray-900">
@@ -15,27 +41,59 @@ function UpcomingTasks({ tasks }) {
         <div className="space-y-3">
           {tasks.map((task) => (
             <div
-              key={task.id}
+              key={task._id}
               className="rounded-xl border border-gray-100 p-3 transition-colors hover:bg-gray-50"
             >
               <p className="text-sm font-semibold text-gray-900">
                 {task.title}
               </p>
 
+              {task.description && (
+                <p className="mt-1 text-xs text-gray-500">
+                  {task.description}
+                </p>
+              )}
+
               <div className="mt-3 flex items-center justify-between">
-                <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
-                  {task.subject}
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
+                    {task.subject?.shortName || "General"}
+                  </span>
+
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                      task.priority === "High"
+                        ? "bg-red-100 text-red-700"
+                        : task.priority === "Medium"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {task.priority}
+                  </span>
+                </div>
 
                 <div className="text-right">
                   <p className="text-xs font-semibold text-blue-600">
-                    {task.date}
-                  </p>
-
-                  <p className="text-xs text-gray-500">
-                    {task.time}
+                    {new Date(task.dueDate).toLocaleDateString()}
                   </p>
                 </div>
+              </div>
+
+              <div className="mt-4 flex justify-end gap-2">
+                <button
+                  onClick={() => completeTask(task)}
+                  className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-blue-700"
+                >
+                  Complete
+                </button>
+
+                <button
+                  onClick={() => deleteTask(task._id)}
+                  className="rounded-lg p-2 text-red-500 transition hover:bg-red-50"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
           ))}
