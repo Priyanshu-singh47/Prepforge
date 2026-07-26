@@ -1,33 +1,72 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import api from "../services/api";
 
 import BookmarkToolbar from "../components/Bookmarks/BookmarkToolbar";
 import BookmarkCard from "../components/Bookmarks/BookmarkCard";
 import EmptyState from "../components/Bookmarks/EmptyState";
 
-import { bookmarksData } from "../mock/bookmarksData";
-
 function Bookmarks() {
+  const [bookmarks, setBookmarks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
-  const [subject, setSubject] = useState("Subjects");
-  const [difficulty, setDifficulty] = useState("Difficulty");
+  const [subject, setSubject] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+
+  useEffect(() => {
+    fetchBookmarks();
+  }, []);
+
+  const fetchBookmarks = async () => {
+    try {
+      const res = await api.get("/bookmarks");
+      setBookmarks(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const subjects = useMemo(() => {
+    const uniqueSubjects = [];
+
+    bookmarks.forEach((bookmark) => {
+      const sub = bookmark.question?.topic?.subject;
+
+      if (
+        sub &&
+        !uniqueSubjects.find((item) => item._id === sub._id)
+      ) {
+        uniqueSubjects.push(sub);
+      }
+    });
+
+    return uniqueSubjects;
+  }, [bookmarks]);
 
   const filteredBookmarks = useMemo(() => {
-    return bookmarksData.filter((bookmark) => {
+    return bookmarks.filter((bookmark) => {
+      const question = bookmark.question;
+
+      if (!question) return false;
+
       const matchesSearch =
-        bookmark.title
+        question.title
           .toLowerCase()
           .includes(search.toLowerCase()) ||
-        bookmark.topic
+        question.topic.name
           .toLowerCase()
           .includes(search.toLowerCase());
 
       const matchesSubject =
-        subject === "Subjects" ||
-        bookmark.subject === subject;
+        !subject ||
+        question.topic.subject?._id === subject;
 
       const matchesDifficulty =
-        difficulty === "Difficulty" ||
-        bookmark.difficulty === difficulty;
+        !difficulty ||
+        question.difficulty === difficulty;
 
       return (
         matchesSearch &&
@@ -35,12 +74,20 @@ function Bookmarks() {
         matchesDifficulty
       );
     });
-  }, [search, subject, difficulty]);
+  }, [bookmarks, search, subject, difficulty]);
+
+  if (loading) {
+    return (
+      <div className="flex h-72 items-center justify-center">
+        <p className="text-lg font-medium text-gray-500">
+          Loading bookmarks...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-
       <div>
         <h1 className="text-3xl font-bold text-gray-900">
           Bookmarks
@@ -58,6 +105,7 @@ function Bookmarks() {
         setSubject={setSubject}
         difficulty={difficulty}
         setDifficulty={setDifficulty}
+        subjects={subjects}
       />
 
       {filteredBookmarks.length === 0 ? (
@@ -66,8 +114,9 @@ function Bookmarks() {
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {filteredBookmarks.map((bookmark) => (
             <BookmarkCard
-              key={bookmark.id}
+              key={bookmark._id}
               bookmark={bookmark}
+              onRefresh={fetchBookmarks}
             />
           ))}
         </div>

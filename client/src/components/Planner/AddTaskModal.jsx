@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 function AddTaskModal({ open, onClose, refreshTasks }) {
-  const [subjects, setSubjects] = useState([]);
+  const [subjects, setSubjects] =useState([]);
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -17,6 +18,7 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
   useEffect(() => {
     if (open) {
       fetchSubjects();
+      setError("");
     }
   }, [open]);
 
@@ -30,6 +32,8 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
   };
 
   const handleChange = (e) => {
+    setError("");
+
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -37,7 +41,31 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
   };
 
   const handleSubmit = async () => {
-    if (!formData.title.trim()) return;
+    if (!formData.title.trim()) {
+      setError("Task title is required.");
+      return;
+    }
+
+    if (!formData.subject) {
+      setError("Please select a subject.");
+      return;
+    }
+
+    if (!formData.dueDate) {
+      setError("Please select a due date.");
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(formData.dueDate);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      setError("Due date cannot be in the past.");
+      return;
+    }
 
     try {
       await api.post("/planner", formData);
@@ -50,10 +78,14 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
         priority: "Medium",
       });
 
+      setError("");
+
       refreshTasks();
       onClose();
     } catch (error) {
-      console.error(error);
+      setError(
+        error.response?.data?.message || "Failed to add task."
+      );
     }
   };
 
@@ -68,7 +100,10 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
           </h2>
 
           <button
-            onClick={onClose}
+            onClick={() => {
+              setError("");
+              onClose();
+            }}
             className="rounded-lg p-1 hover:bg-gray-100"
           >
             <X size={24} />
@@ -76,6 +111,12 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
         </div>
 
         <div className="space-y-4">
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           <input
             name="title"
             value={formData.title}
@@ -106,7 +147,7 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
             value={formData.description}
             onChange={handleChange}
             placeholder="Description (optional)"
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500 resize-none"
+            className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
           />
 
           <input
@@ -130,7 +171,10 @@ function AddTaskModal({ open, onClose, refreshTasks }) {
 
           <div className="flex justify-end gap-3 pt-2">
             <button
-              onClick={onClose}
+              onClick={() => {
+                setError("");
+                onClose();
+              }}
               className="rounded-xl border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-100"
             >
               Cancel

@@ -1,25 +1,90 @@
-import { LogOut } from "lucide-react";
+import { useState } from "react";
+import { LogOut, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
+import ConfirmModal from "../Common/ConfirmModal";
 
 const DangerZone = () => {
+  const navigate = useNavigate();
+
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+
+      await api.delete("/settings/account");
+
+      localStorage.removeItem("token");
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setDeleteOpen(false);
+    }
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-      <div className="flex items-center justify-between">
-        <div>
+    <>
+      <div className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm">
+        <div className="mb-5">
           <h2 className="text-base font-semibold text-gray-900">
             Account Actions
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
-            Manage important account actions.
+          <p className="mt-1 text-sm text-gray-500">
+            Logout or permanently delete your account.
           </p>
         </div>
 
-        <button className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-red-600 font-medium hover:bg-red-100 transition">
-          <LogOut className="w-4 h-4" />
-          Logout
-        </button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={() => setLogoutOpen(true)}
+            className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-2.5 font-medium transition hover:bg-gray-50"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </button>
+
+          <button
+            onClick={() => setDeleteOpen(true)}
+            className="flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 font-medium text-red-600 transition hover:bg-red-100"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete Account
+          </button>
+        </div>
       </div>
-    </div>
+
+      <ConfirmModal
+        open={logoutOpen}
+        title="Logout"
+        message="Are you sure you want to logout?"
+        confirmText="Logout"
+        loading={false}
+        onConfirm={handleLogout}
+        onCancel={() => setLogoutOpen(false)}
+      />
+
+      <ConfirmModal
+        open={deleteOpen}
+        title="Delete Account"
+        message="This action cannot be undone. Your account and all associated data will be permanently deleted."
+        confirmText="Delete Account"
+        loading={loading}
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setDeleteOpen(false)}
+      />
+    </>
   );
 };
 

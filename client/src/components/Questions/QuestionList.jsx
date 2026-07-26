@@ -1,6 +1,9 @@
 import QuestionCard from "./QuestionCard";
 
-function QuestionList({ questions }) {
+function QuestionList({
+  questions,
+  toggleBookmark,
+}) {
   if (questions.length === 0) {
     return (
       <div className="flex h-72 items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white">
@@ -23,6 +26,7 @@ function QuestionList({ questions }) {
         <QuestionCard
           key={question._id}
           question={question}
+          toggleBookmark={toggleBookmark}
         />
       ))}
     </div>

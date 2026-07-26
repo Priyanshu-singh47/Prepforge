@@ -1,51 +1,104 @@
-function BookmarkCard({ bookmark }) {
+import {
+  Bookmark,
+  CheckCircle2,
+  Circle,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import api from "../../services/api";
+
+function BookmarkCard({
+  bookmark,
+  onRefresh,
+}) {
+  const question = bookmark.question;
+
   const difficultyColors = {
     Easy: "bg-green-100 text-green-700",
     Medium: "bg-yellow-100 text-yellow-700",
     Hard: "bg-red-100 text-red-700",
   };
 
+  const handleRemoveBookmark = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      await api.patch(
+        `/questions/${question._id}/bookmark`,
+        {
+          isBookmarked: false,
+        }
+      );
+
+      onRefresh();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            {bookmark.title}
-          </h2>
+    <Link
+      to={`/subjects/${question.topic.subject._id}/topics/${question.topic._id}/questions/${question._id}`}
+      className="group relative block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
+    >
+      <button
+        type="button"
+        onClick={handleRemoveBookmark}
+        className="absolute right-4 top-4 rounded-full p-1 transition-colors hover:bg-gray-100"
+      >
+        <Bookmark
+          size={18}
+          className="fill-blue-600 text-blue-600"
+        />
+      </button>
 
-          <p className="mt-1 text-sm text-gray-500">
-            {bookmark.subject} • {bookmark.topic}
-          </p>
-        </div>
+      <div className="pr-8">
+        <h2 className="text-lg font-semibold text-gray-900">
+          {question.title}
+        </h2>
 
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${difficultyColors[bookmark.difficulty]}`}
-        >
-          {bookmark.difficulty}
-        </span>
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {bookmark.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600"
-          >
-            {tag}
-          </span>
-        ))}
+        <p className="mt-1 text-sm text-gray-500">
+          {question.topic.subject.shortName ||
+            question.topic.subject.name}
+          {" • "}
+          {question.topic.name}
+        </p>
       </div>
 
       <div className="mt-5 flex items-center justify-between">
-        <span className="text-xs text-gray-400">
-          Saved {bookmark.savedAt}
+        <span
+          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            difficultyColors[question.difficulty]
+          }`}
+        >
+          {question.difficulty}
         </span>
 
-        <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-blue-700 active:scale-95">
-          Solve
-        </button>
+        <div className="flex items-center gap-2 text-sm">
+          {bookmark.status === "Done" ? (
+            <>
+              <CheckCircle2
+                size={18}
+                className="text-green-600"
+              />
+              <span className="text-green-600">
+                Solved
+              </span>
+            </>
+          ) : (
+            <>
+              <Circle
+                size={18}
+                className="text-gray-400"
+              />
+              <span className="text-gray-500">
+                {bookmark.status}
+              </span>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

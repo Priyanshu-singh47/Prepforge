@@ -18,39 +18,59 @@ function Questions() {
   const [filter, setFilter] = useState("All");
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const [questionRes, topicRes] = await Promise.all([
-          api.get(`/questions/topic/${topicId}`),
-          api.get(`/subjects/${subjectId}/topics`),
-        ]);
-
-        console.log("==================================");
-        console.log("Questions API Response");
-        console.log(questionRes.data);
-
-        if (questionRes.data.length > 0) {
-          console.log("First Question:");
-          console.log(questionRes.data[0]);
-        }
-        console.log("==================================");
-
-        setQuestions(questionRes.data);
-
-        const currentTopic = topicRes.data.topics.find(
-          (item) => item._id === topicId
-        );
-
-        setTopic(currentTopic);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchQuestions();
   }, [subjectId, topicId]);
+
+  const fetchQuestions = async () => {
+    try {
+      const [questionRes, topicRes] = await Promise.all([
+        api.get(`/questions/topic/${topicId}`),
+        api.get(`/subjects/${subjectId}/topics`),
+      ]);
+
+      setQuestions(questionRes.data);
+
+      const currentTopic = topicRes.data.topics.find(
+        (item) => item._id === topicId
+      );
+
+      setTopic(currentTopic);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleBookmark = async (questionId) => {
+    try {
+      const question = questions.find(
+        (q) => q._id === questionId
+      );
+
+      const res = await api.patch(
+        `/questions/${questionId}/bookmark`,
+        {
+          isBookmarked: !question.isBookmarked,
+        }
+      );
+
+      setQuestions((prev) =>
+        prev.map((q) =>
+          q._id === questionId
+            ? {
+                ...q,
+                isBookmarked: res.data.isBookmarked,
+              }
+            : q
+        )
+      );
+
+      // Toast will be added later
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const filteredQuestions = useMemo(() => {
     let filtered = questions.filter((question) =>
@@ -143,7 +163,10 @@ function Questions() {
         questions={questions}
       />
 
-      <QuestionList questions={filteredQuestions} />
+      <QuestionList
+        questions={filteredQuestions}
+        toggleBookmark={toggleBookmark}
+      />
     </div>
   );
 }
