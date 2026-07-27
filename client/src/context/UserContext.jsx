@@ -1,38 +1,61 @@
-import { createContext, useContext, useState } from "react";
+import {createContext,useContext,useState} from "react";
 
-const UserContext = createContext();
-
-export const UserProvider = ({ children }) => {
-
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user"))
-  );
+const UserContext=createContext();
 
 
-  const updateUser = (updatedUser) => {
+export const UserProvider=({children})=>{
 
-    setUser(updatedUser);
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify(updatedUser)
-    );
-
-  };
+const [user,setUser]=useState(
+JSON.parse(localStorage.getItem("user")) || null
+);
 
 
-  return (
-    <UserContext.Provider
-      value={{
-        user,
-        updateUser,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+
+const updateUser=(newUser)=>{
+
+setUser(newUser);
+
+localStorage.setItem(
+"user",
+JSON.stringify(newUser)
+);
 
 };
 
 
-export const useUser = () => useContext(UserContext);
+
+const logoutUser=()=>{
+
+setUser(null);
+
+localStorage.removeItem("user");
+
+localStorage.removeItem("token");
+
+};
+
+
+
+return(
+
+<UserContext.Provider
+
+value={{
+user,
+updateUser,
+logoutUser,
+}}
+
+>
+
+{children}
+
+</UserContext.Provider>
+
+);
+
+};
+
+
+
+export const useUser=()=>useContext(UserContext);

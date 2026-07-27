@@ -1,214 +1,175 @@
-import { useEffect, useRef, useState } from "react";
+import {useEffect,useRef,useState} from "react";
 import {
-  FiBell,
-  FiChevronDown,
-  FiSearch,
-  FiSettings,
-  FiLogOut,
-  FiMoon,
-  FiSun,
+FiBell,
+FiChevronDown,
+FiSearch,
+FiSettings,
+FiLogOut,
+FiMoon,
+FiSun,
 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import api from "../../services/api";
 import ConfirmModal from "../Common/ConfirmModal";
 
-import { useTheme } from "../../context/ThemeContext";
-import { useUser } from "../../context/UserContext";
+import {useTheme} from "../../context/ThemeContext";
+import {useUser} from "../../context/UserContext";
 
 
 function Navbar(){
 
-  const navigate=useNavigate();
+const navigate=useNavigate();
 
-  const {darkMode,toggleTheme}=useTheme();
+const {darkMode,toggleTheme}=useTheme();
 
-  const {user}=useUser();
+const {user}=useUser();
 
 
-  const [notifications,setNotifications]=useState([]);
+const [notifications,setNotifications]=useState([]);
+const [showNotifications,setShowNotifications]=useState(false);
+const [showProfile,setShowProfile]=useState(false);
+const [confirmLogout,setConfirmLogout]=useState(false);
 
-  const [showNotifications,setShowNotifications]=useState(false);
+const [search,setSearch]=useState("");
+const [results,setResults]=useState([]);
+const [showSearch,setShowSearch]=useState(false);
 
-  const [showProfile,setShowProfile]=useState(false);
 
-  const [confirmLogout,setConfirmLogout]=useState(false);
+const notificationRef=useRef(null);
+const profileRef=useRef(null);
 
 
-  const [search,setSearch]=useState("");
+useEffect(()=>{
 
-  const [results,setResults]=useState([]);
+fetchNotifications();
 
-  const [showSearch,setShowSearch]=useState(false);
+const handleClickOutside=(e)=>{
 
+if(notificationRef.current&&!notificationRef.current.contains(e.target))
+setShowNotifications(false);
 
+if(profileRef.current&&!profileRef.current.contains(e.target))
+setShowProfile(false);
 
-  const notificationRef=useRef(null);
-  const profileRef=useRef(null);
+if(!e.target.closest(".search-box"))
+setShowSearch(false);
 
+};
 
+document.addEventListener("mousedown",handleClickOutside);
 
-  useEffect(()=>{
+return()=>document.removeEventListener("mousedown",handleClickOutside);
 
-    fetchNotifications();
+},[]);
 
 
-    const handleClickOutside=(e)=>{
 
-      if(
-        notificationRef.current &&
-        !notificationRef.current.contains(e.target)
-      ){
-        setShowNotifications(false);
-      }
+const fetchNotifications=async()=>{
 
+try{
 
-      if(
-        profileRef.current &&
-        !profileRef.current.contains(e.target)
-      ){
-        setShowProfile(false);
-      }
+const {data}=await api.get("/notifications");
 
+setNotifications(data.notifications||[]);
 
-      if(
-        !e.target.closest(".search-box")
-      ){
-        setShowSearch(false);
-      }
+}
+catch(error){
 
-    };
+console.error(error);
 
+}
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+};
 
 
-    return()=>{
 
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+const handleSearch=async(e)=>{
 
-    };
+const value=e.target.value;
 
-  },[]);
+setSearch(value);
 
 
+if(value.trim().length<2){
 
-  const fetchNotifications=async()=>{
+setResults([]);
 
-    try{
+setShowSearch(false);
 
-      const {data}=await api.get(
-        "/notifications"
-      );
+return;
 
-      setNotifications(
-        data.notifications || []
-      );
+}
 
-    }
-    catch(error){
 
-      console.error(error);
+try{
 
-    }
+const {data}=await api.get(
+"/search",
+{
+params:{
+query:value,
+},
+}
+);
 
-  };
 
+setResults(
+(data.results||[]).slice(0,5)
+);
 
+setShowSearch(true);
 
-  const handleSearch=async(e)=>{
 
-    const value=e.target.value;
+}
+catch(error){
 
-    setSearch(value);
+console.error(error);
 
+setResults([]);
 
-    if(!value.trim()){
+setShowSearch(false);
 
-      setResults([]);
+}
 
-      setShowSearch(false);
+};
 
-      return;
 
-    }
 
+const dismissNotification=async(id)=>{
 
-    try{
+try{
 
-      const {data}=await api.get(
-        "/search",
-        {
-          params:{
-            query:value,
-          },
-        }
-      );
+await api.patch(
+`/notifications/${id}/dismiss`
+);
 
 
-      setResults(
-        data.results || []
-      );
+setNotifications(prev=>
+prev.filter(item=>item.id!==id)
+);
 
-      setShowSearch(true);
 
+}
+catch(error){
 
-    }
-    catch(error){
+console.error(error);
 
-      console.error(error);
+}
 
-      setResults([]);
+};
 
-      setShowSearch(false);
 
-    }
 
-  };
+const logout=()=>{
 
+localStorage.removeItem("token");
 
+localStorage.removeItem("user");
 
-  const dismissNotification=async(id)=>{
+navigate("/login");
 
-    try{
-
-      await api.patch(
-        `/notifications/${id}/dismiss`
-      );
-
-
-      setNotifications(prev=>
-        prev.filter(
-          item=>item.id!==id
-        )
-      );
-
-    }
-    catch(error){
-
-      console.error(error);
-
-    }
-
-  };
-
-
-
-  const logout=()=>{
-
-    localStorage.removeItem("token");
-
-    localStorage.removeItem("user");
-
-    navigate("/login");
-
-  };
+};
 
 
 
@@ -219,9 +180,8 @@ return(
 
 <div className="search-box relative w-80">
 
-<FiSearch
-className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-/>
+
+<FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
 
 
 <input
@@ -232,47 +192,39 @@ className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-16 te
 />
 
 
-<span className="absolute right-3 top-1/2 -translate-y-1/2 rounded bg-gray-100 px-2 py-0.5 text-xs dark:bg-gray-700">
-Ctrl + K
-</span>
+
+{showSearch&&(
+
+<div className="absolute top-12 left-0 z-[100] max-h-96 w-full overflow-y-auto rounded-xl border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
 
 
-{showSearch && (
-
-<div className="absolute top-12 z-50 w-full rounded-xl border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-
-{
-results.length===0 ? (
+{results.length===0?(
 
 <p className="p-2 text-sm text-gray-500">
 No results found
 </p>
 
-)
+):
 
-:
-
-results.map((item)=>(
+results.map(item=>(
 
 <div
-key={item._id || item.path}
+key={item._id||item.path}
 onClick={()=>{
 
-if(item.path){
-
+if(item.path)
 navigate(item.path);
-
-}
 
 setSearch("");
 
 setShowSearch(false);
 
 }}
+
 className="cursor-pointer rounded-lg p-2 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
 >
 
-<p className="text-sm">
+<p className="text-sm font-medium">
 {item.title}
 </p>
 
@@ -303,28 +255,72 @@ className="relative"
 >
 
 <button
-onClick={()=>setShowNotifications(!showNotifications)}
+onClick={()=>setShowNotifications(prev=>!prev)}
 className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700"
 >
 
 <FiBell/>
 
-{notifications.length>0 && (
-
+{notifications.length>0&&(
 <span className="absolute -right-1 -top-1 rounded-full bg-red-600 px-2 text-xs text-white">
-
 {notifications.length}
-
 </span>
-
 )}
 
 </button>
 
+
+
+{showNotifications&&(
+
+<div className="absolute right-0 top-12 z-[100] w-80 rounded-xl border bg-white p-4 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+
+
+<h3 className="mb-3 font-semibold dark:text-white">
+Notifications
+</h3>
+
+
+{notifications.length===0?(
+
+<p className="py-6 text-center text-sm text-gray-500">
+🎉 You're all caught up!
+</p>
+
+):
+
+notifications.map(item=>(
+
+<button
+key={item.id}
+onClick={()=>dismissNotification(item.id)}
+className="mb-2 w-full rounded-lg border p-3 text-left dark:border-gray-700"
+>
+
+<p className="text-sm font-medium dark:text-white">
+{item.title}
+</p>
+
+<p className="text-xs text-gray-500">
+{item.message}
+</p>
+
+</button>
+
+))
+
+}
+
+</div>
+
+)}
+
 </div>
 
 
+
 <div className="h-7 w-px bg-gray-200 dark:bg-gray-700"/>
+
 
 
 <div
@@ -341,7 +337,7 @@ className="flex items-center gap-3 rounded-lg p-1.5 hover:bg-gray-100 dark:hover
 
 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white">
 
-{user?.name?.charAt(0)?.toUpperCase() || "U"}
+{user?.name?.charAt(0)?.toUpperCase()||"U"}
 
 </div>
 
@@ -349,11 +345,11 @@ className="flex items-center gap-3 rounded-lg p-1.5 hover:bg-gray-100 dark:hover
 <div>
 
 <p className="text-sm font-semibold dark:text-white">
-{user?.name || "User"}
+{user?.name||"User"}
 </p>
 
 <p className="text-xs text-gray-500">
-{user?.branch || "Computer Engineering"}
+{user?.branch||"Computer Engineering"}
 </p>
 
 </div>
@@ -364,9 +360,10 @@ className="flex items-center gap-3 rounded-lg p-1.5 hover:bg-gray-100 dark:hover
 </button>
 
 
-{showProfile && (
 
-<div className="absolute right-0 top-14 z-50 w-56 rounded-xl border bg-white p-2 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+{showProfile&&(
+
+<div className="absolute right-0 top-14 z-[100] w-56 rounded-xl border bg-white p-2 shadow-xl dark:border-gray-700 dark:bg-gray-800">
 
 
 <button
@@ -411,7 +408,9 @@ Logout
 
 </div>
 
+
 </div>
+
 
 
 <ConfirmModal

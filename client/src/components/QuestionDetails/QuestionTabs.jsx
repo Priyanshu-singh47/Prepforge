@@ -1,218 +1,289 @@
-import { useEffect, useState } from "react";
+import { useEffect,useState } from "react";
+import toast from "react-hot-toast";
 import api from "../../services/api";
 
-function QuestionTabs({ question }) {
-  const [activeTab, setActiveTab] = useState("Resources");
-  const [note, setNote] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+function QuestionTabs({question}){
 
-  const tabs = ["Resources", "Notes"];
+const [activeTab,setActiveTab]=useState("Resources");
+const [note,setNote]=useState("");
+const [loading,setLoading]=useState(false);
+const [saving,setSaving]=useState(false);
 
-  useEffect(() => {
-    if (activeTab !== "Notes" || !question?._id) return;
-
-    const fetchNote = async () => {
-      try {
-        setLoading(true);
-
-        const { data } = await api.get(
-          `/notes/question/${question._id}`
-        );
-
-        setNote(data?.content || "");
-      } catch {
-        setNote("");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNote();
-  }, [activeTab, question]);
+const tabs=["Resources","Notes"];
 
 
-  const saveNote = async () => {
-    try {
-      setSaving(true);
-      setMessage("");
+useEffect(()=>{
 
-      await api.post(`/notes/question/${question._id}`, {
-        content: note,
-      });
+if(activeTab!=="Notes" || !question?._id) return;
 
-      setMessage("Note saved successfully.");
-    } catch {
-      setMessage("Failed to save note.");
-    } finally {
-      setSaving(false);
+const fetchNote=async()=>{
 
-      setTimeout(() => {
-        setMessage("");
-      },2000);
-    }
-  };
+try{
 
+setLoading(true);
 
-  return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+const {data}=await api.get(
+`/notes/question/${question._id}`
+);
 
-      <div className="flex border-b border-gray-200 dark:border-gray-700">
+setNote(data?.content || "");
 
-        {tabs.map((tab)=>(
-          <button
-            key={tab}
-            onClick={()=>setActiveTab(tab)}
-            className={`px-6 py-4 text-sm font-medium transition ${
-              activeTab===tab
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+}
+catch{
 
-      </div>
+setNote("");
+
+}
+finally{
+
+setLoading(false);
+
+}
+
+};
+
+fetchNote();
+
+},[activeTab,question]);
 
 
-      <div className="p-6">
 
-        {activeTab==="Resources" && (
-          <div className="space-y-6">
+const saveNote=async()=>{
 
-            {question.pattern && (
-              <section>
-                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  Pattern
-                </h2>
+try{
 
-                <p className="text-gray-600 dark:text-gray-400">
-                  {question.pattern}
-                </p>
-              </section>
-            )}
+setSaving(true);
 
+await api.post(
+`/notes/question/${question._id}`,
+{
+content:note,
+}
+);
 
-            {question.source?.url && (
-              <section>
-                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  Source
-                </h2>
+toast.success("Notes saved successfully");
 
-                <a
-                  href={question.source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {question.source.name}
-                </a>
-              </section>
-            )}
+}
+catch(error){
+
+console.error(error);
+
+toast.error("Failed to save notes");
+
+}
+finally{
+
+setSaving(false);
+
+}
+
+};
 
 
-            {question.article?.url && (
-              <section>
-                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  Article
-                </h2>
 
-                <a
-                  href={question.article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {question.article.name}
-                </a>
-              </section>
-            )}
+return(
+
+<div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
 
 
-            {question.practice?.url && (
-              <section>
-                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  Practice
-                </h2>
+<div className="flex border-b border-gray-200 dark:border-gray-700">
 
-                <a
-                  href={question.practice.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {question.practice.name}
-                </a>
-              </section>
-            )}
+{tabs.map(tab=>(
 
+<button
+key={tab}
+onClick={()=>setActiveTab(tab)}
+className={`px-6 py-4 text-sm font-medium transition ${
+activeTab===tab
+?"border-b-2 border-blue-600 text-blue-600"
+:"text-gray-500 hover:text-gray-700 dark:text-gray-400"
+}`}
+>
 
-            {!question.source?.url &&
-            !question.article?.url &&
-            !question.practice?.url &&
-            !question.pattern && (
-              <p className="text-gray-500">
-                No resources available.
-              </p>
-            )}
+{tab}
 
-          </div>
-        )}
+</button>
+
+))}
+
+</div>
 
 
-        {activeTab==="Notes" && (
-          <div className="space-y-4">
 
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Personal Notes
-            </h2>
+<div className="p-6">
 
 
-            {loading ? (
-              <p className="text-gray-500">
-                Loading...
-              </p>
-            ) : (
-              <>
-                <textarea
-                  value={note}
-                  onChange={(e)=>setNote(e.target.value)}
-                  rows={10}
-                  placeholder="Write your personal notes here..."
-                  className="w-full rounded-lg border border-gray-300 bg-white p-4 text-gray-900 outline-none focus:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
-                />
+{activeTab==="Resources" && (
 
-                <div className="flex items-center justify-between">
+<div className="space-y-6">
 
-                  {message ? (
-                    <p className="text-sm text-green-600">
-                      {message}
-                    </p>
-                  ) : (
-                    <div/>
-                  )}
 
-                  <button
-                    onClick={saveNote}
-                    disabled={saving}
-                    className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    {saving ? "Saving..." : "Save Notes"}
-                  </button>
+{question.pattern && (
 
-                </div>
-              </>
-            )}
+<section>
 
-          </div>
-        )}
+<h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+Pattern
+</h2>
 
-      </div>
+<p className="text-gray-600 dark:text-gray-400">
+{question.pattern}
+</p>
 
-    </div>
-  );
+</section>
+
+)}
+
+
+
+{question.source?.url && (
+
+<section>
+
+<h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+Source
+</h2>
+
+<a
+href={question.source.url}
+target="_blank"
+rel="noopener noreferrer"
+className="text-blue-600 hover:underline"
+>
+{question.source.name}
+</a>
+
+</section>
+
+)}
+
+
+
+{question.article?.url && (
+
+<section>
+
+<h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+Article
+</h2>
+
+<a
+href={question.article.url}
+target="_blank"
+rel="noopener noreferrer"
+className="text-blue-600 hover:underline"
+>
+{question.article.name}
+</a>
+
+</section>
+
+)}
+
+
+
+{question.practice?.url && (
+
+<section>
+
+<h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+Practice
+</h2>
+
+<a
+href={question.practice.url}
+target="_blank"
+rel="noopener noreferrer"
+className="text-blue-600 hover:underline"
+>
+{question.practice.name}
+</a>
+
+</section>
+
+)}
+
+
+
+{!question.source?.url &&
+!question.article?.url &&
+!question.practice?.url &&
+!question.pattern && (
+
+<p className="text-gray-500">
+No resources available.
+</p>
+
+)}
+
+</div>
+
+)}
+
+
+
+{activeTab==="Notes" && (
+
+<div className="space-y-4">
+
+
+<h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+Personal Notes
+</h2>
+
+
+
+{loading ? (
+
+<p className="text-gray-500">
+Loading...
+</p>
+
+):(
+
+
+<>
+
+<textarea
+value={note}
+onChange={(e)=>setNote(e.target.value)}
+rows={10}
+placeholder="Write your personal notes here..."
+className="w-full rounded-lg border border-gray-300 bg-white p-4 text-gray-900 outline-none focus:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+/>
+
+
+
+<div className="flex justify-end">
+
+<button
+onClick={saveNote}
+disabled={saving}
+className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+>
+
+{saving?"Saving...":"Save Notes"}
+
+</button>
+
+</div>
+
+
+</>
+
+)}
+
+</div>
+
+)}
+
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default QuestionTabs;

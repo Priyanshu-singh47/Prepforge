@@ -7,7 +7,6 @@ import api from "../../services/api";
 function AddTaskModal({open,onClose,refreshTasks}){
 
 const [subjects,setSubjects]=useState([]);
-
 const [error,setError]=useState("");
 
 const [formData,setFormData]=useState({
@@ -95,6 +94,25 @@ return;
 }
 
 
+// Past date validation
+
+const selectedDate=new Date(formData.dueDate);
+
+const today=new Date();
+
+today.setHours(0,0,0,0);
+selectedDate.setHours(0,0,0,0);
+
+
+if(selectedDate < today){
+
+setError("Past dates are not allowed.");
+
+return;
+
+}
+
+
 
 try{
 
@@ -130,7 +148,6 @@ refreshTasks();
 onClose();
 
 
-
 }
 catch(error){
 
@@ -139,7 +156,7 @@ console.error(error);
 
 
 toast.error(
-"Failed to add task"
+error.response?.data?.message || "Failed to add task"
 );
 
 

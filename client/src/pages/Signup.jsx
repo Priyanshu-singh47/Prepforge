@@ -1,115 +1,247 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import toast from "react-hot-toast";
 
 import api from "../services/api";
-
 import AuthLayout from "../components/Auth/AuthLayout";
 import SignupForm from "../components/Auth/SignupForm";
 
-function Signup() {
-  const navigate = useNavigate();
-
-  const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+import {useUser} from "../context/UserContext";
 
 
-  const handleSubmit = async(e)=>{
+function Signup(){
 
-    e.preventDefault();
+const navigate=useNavigate();
 
-    try{
-
-      const {data}=await api.post(
-        "/auth/signup",
-        {
-          name,
-          email,
-          password,
-        }
-      );
+const {updateUser}=useUser();
 
 
-      alert(data.message);
+const [name,setName]=useState("");
 
-      navigate("/login");
+const [email,setEmail]=useState("");
 
+const [password,setPassword]=useState("");
 
-    }catch(error){
-
-      alert(
-        error.response?.data?.message ||
-        "Signup failed"
-      );
-
-    }
-
-  };
+const [loading,setLoading]=useState(false);
 
 
 
-  const handleGoogleSignup = async(token)=>{
-
-    try{
-
-      const {data}=await api.post(
-        "/auth/google",
-        {
-          token,
-        }
-      );
 
 
-      localStorage.setItem(
-        "token",
-        data.token
-      );
+const handleSubmit=async(e)=>{
+
+e.preventDefault();
 
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
+try{
 
 
-      navigate("/");
+setLoading(true);
 
 
-    }catch(error){
 
-      alert(
-        error.response?.data?.message ||
-        "Google signup failed"
-      );
+const {data}=await api.post(
 
-    }
+"/auth/signup",
 
-  };
-
-
-  return (
-    <AuthLayout
-      title="Create Your Account"
-      subtitle="Join PrepForge and start tracking your preparation."
-    >
-
-      <SignupForm
-        name={name}
-        setName={setName}
-
-        email={email}
-        setEmail={setEmail}
-
-        password={password}
-        setPassword={setPassword}
-
-        onSubmit={handleSubmit}
-
-        onGoogleSignup={handleGoogleSignup}
-      />
-
-    </AuthLayout>
-  );
+{
+name:name.trim(),
+email:email.trim(),
+password,
 }
+
+);
+
+
+
+
+toast.success(
+"OTP sent to your email"
+);
+
+
+
+
+navigate("/verify-email",{
+
+state:{
+email:data.email,
+}
+
+});
+
+
+
+}
+
+catch(error){
+
+
+toast.error(
+
+error.response?.data?.message ||
+
+"Signup failed"
+
+);
+
+
+
+}
+
+finally{
+
+
+setLoading(false);
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+
+const handleGoogleSignup=async(token)=>{
+
+
+try{
+
+
+const {data}=await api.post(
+
+"/auth/google",
+
+{
+token,
+}
+
+);
+
+
+
+
+
+localStorage.setItem(
+
+"token",
+
+data.token
+
+);
+
+
+
+
+
+updateUser(data.user);
+
+
+
+
+
+toast.success(
+
+"Signed up successfully"
+
+);
+
+
+
+
+
+navigate("/dashboard");
+
+
+
+}
+
+catch(error){
+
+
+
+toast.error(
+
+error.response?.data?.message ||
+
+"Google signup failed"
+
+);
+
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+return(
+
+
+<AuthLayout
+
+title="Create Your Account"
+
+subtitle="Join PrepForge and start tracking your preparation."
+
+>
+
+
+<SignupForm
+
+
+name={name}
+
+setName={setName}
+
+
+
+email={email}
+
+setEmail={setEmail}
+
+
+
+password={password}
+
+setPassword={setPassword}
+
+
+
+onSubmit={handleSubmit}
+
+
+
+onGoogleSignup={handleGoogleSignup}
+
+
+
+loading={loading}
+
+
+/>
+
+
+
+</AuthLayout>
+
+
+);
+
+
+}
+
+
 
 export default Signup;
