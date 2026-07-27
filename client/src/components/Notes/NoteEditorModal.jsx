@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import toast from "react-hot-toast";
 
 import api from "../../services/api";
 
@@ -7,118 +8,152 @@ function NoteEditorModal({
   open,
   onClose,
   onSave,
-  editingNote = null,
+  editingNote=null,
 }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [subject, setSubject] = useState("");
+  const [title,setTitle]=useState("");
+  const [content,setContent]=useState("");
+  const [subject,setSubject]=useState("");
 
-  const [subjects, setSubjects] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [subjects,setSubjects]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState("");
 
-  useEffect(() => {
-    if (!open) return;
+  useEffect(()=>{
+    if(!open) return;
 
     fetchSubjects();
     setError("");
-  }, [open]);
+  },[open]);
 
-  useEffect(() => {
-    if (editingNote) {
+  useEffect(()=>{
+    if(editingNote){
       setTitle(editingNote.title);
       setContent(editingNote.content);
       setSubject(editingNote.subject?._id || "");
-    } else {
+    }
+    else{
       setTitle("");
       setContent("");
       setSubject("");
     }
 
     setError("");
-  }, [editingNote, open]);
+  },[editingNote,open]);
 
-  const fetchSubjects = async () => {
-    try {
-      const res = await api.get("/subjects");
+  const fetchSubjects=async()=>{
+    try{
+      const res=await api.get("/subjects");
       setSubjects(res.data);
-    } catch (err) {
+    }
+    catch(err){
       console.error(err);
     }
   };
 
-  const handleSubmit = async () => {
-    if (!title.trim()) {
+  const handleSubmit=async()=>{
+
+    if(!title.trim()){
       setError("Note title is required.");
       return;
     }
 
-    if (!subject) {
+    if(!subject){
       setError("Please select a subject.");
       return;
     }
 
-    if (!content.trim()) {
+    if(!content.trim()){
       setError("Content is required.");
       return;
     }
 
     setLoading(true);
 
-    try {
-      const payload = {
+    try{
+      const payload={
         title,
         content,
         subject,
       };
 
-      if (editingNote) {
+      if(editingNote){
+
         await api.put(
           `/notes/${editingNote._id}`,
           payload
         );
-      } else {
-        await api.post("/notes", payload);
+
+        toast.success(
+          "Note updated successfully"
+        );
+
+      }
+      else{
+
+        await api.post(
+          "/notes",
+          payload
+        );
+
+        toast.success(
+          "Note created successfully"
+        );
+
       }
 
       setError("");
 
       onSave();
       onClose();
-    } catch (err) {
+
+    }
+    catch(err){
+
       console.error(err);
+
+      toast.error(
+        err.response?.data?.message ||
+        "Something went wrong"
+      );
 
       setError(
         err.response?.data?.message ||
-          "Something went wrong."
+        "Something went wrong."
       );
-    } finally {
+
+    }
+    finally{
       setLoading(false);
     }
   };
 
-  if (!open) return null;
+  if(!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+
+      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800">
+
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            {editingNote ? "Edit Note" : "Add Note"}
+
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+            {editingNote?"Edit Note":"Add Note"}
           </h2>
 
           <button
-            onClick={() => {
+            onClick={()=>{
               setError("");
               onClose();
             }}
-            className="rounded-lg p-1 hover:bg-gray-100"
+            className="rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <X size={24} />
+            <X size={24} className="dark:text-gray-300"/>
           </button>
+
         </div>
 
         <div className="space-y-4">
+
           {error && (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
@@ -129,24 +164,26 @@ function NoteEditorModal({
             type="text"
             placeholder="Enter note title"
             value={title}
-            onChange={(e) => {
+            onChange={(e)=>{
               setTitle(e.target.value);
               setError("");
             }}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           />
 
           <select
             value={subject}
-            onChange={(e) => {
+            onChange={(e)=>{
               setSubject(e.target.value);
               setError("");
             }}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           >
-            <option value="">Select Subject</option>
+            <option value="">
+              Select Subject
+            </option>
 
-            {subjects.map((sub) => (
+            {subjects.map((sub)=>(
               <option
                 key={sub._id}
                 value={sub._id}
@@ -154,32 +191,26 @@ function NoteEditorModal({
                 {sub.shortName || sub.name}
               </option>
             ))}
+
           </select>
 
           <textarea
             rows={10}
             placeholder="Write your notes here..."
             value={content}
-            onChange={(e) => {
+            onChange={(e)=>{
               setContent(e.target.value);
               setError("");
             }}
-            className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-          />          <div className="flex justify-end gap-3 pt-2">
+            className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+          />
+
+          <div className="flex justify-end gap-3 pt-2">
+
             <button
-              onClick={() => {
-                setError("");
-
-                if (!editingNote) {
-                  setTitle("");
-                  setContent("");
-                  setSubject("");
-                }
-
-                onClose();
-              }}
+              onClick={onClose}
               disabled={loading}
-              className="rounded-xl border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-100 disabled:opacity-60"
+              className="rounded-xl border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
@@ -190,14 +221,18 @@ function NoteEditorModal({
               className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:opacity-60"
             >
               {loading
-                ? "Saving..."
-                : editingNote
-                ? "Update Note"
-                : "Save Note"}
+                ?"Saving..."
+                :editingNote
+                ?"Update Note"
+                :"Save Note"}
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }

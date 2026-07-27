@@ -6,10 +6,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
-function QuestionCard({
-  question,
-  toggleBookmark,
-}) {
+function QuestionCard({ question, toggleBookmark }) {
   const { subjectId, topicId } = useParams();
 
   const badgeColor = {
@@ -21,7 +18,7 @@ function QuestionCard({
   return (
     <Link
       to={`/subjects/${subjectId}/topics/${topicId}/questions/${question._id}`}
-      className="group relative flex items-center justify-between rounded-xl border border-gray-200 bg-white px-6 py-3 transition-colors duration-200 hover:bg-gray-50"
+      className="group relative flex items-center justify-between rounded-xl border border-gray-200 bg-white px-6 py-3 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
     >
       <button
         type="button"
@@ -30,7 +27,7 @@ function QuestionCard({
           e.stopPropagation();
           toggleBookmark(question._id);
         }}
-        className="absolute right-4 top-4 rounded-full p-1 transition-colors hover:bg-gray-100"
+        className="absolute right-4 top-4 rounded-full p-1 transition hover:bg-gray-100 dark:hover:bg-gray-600"
       >
         <Bookmark
           size={18}
@@ -43,6 +40,7 @@ function QuestionCard({
       </button>
 
       <div className="flex items-center gap-4">
+
         {question.status === "Done" ? (
           <CheckCircle2
             size={22}
@@ -55,12 +53,15 @@ function QuestionCard({
           />
         )}
 
-        <h3 className="font-medium text-gray-900">
+        <h3 className="font-medium text-gray-900 dark:text-white">
           {question.title}
         </h3>
+
       </div>
 
+
       <div className="flex items-center gap-4 pr-8">
+
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
             badgeColor[question.difficulty] ||
@@ -70,11 +71,14 @@ function QuestionCard({
           {question.difficulty}
         </span>
 
+
         <ArrowRight
           size={18}
           className="text-gray-400 opacity-0 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100"
         />
+
       </div>
+
     </Link>
   );
 }

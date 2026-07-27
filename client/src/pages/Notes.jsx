@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 import NotesToolbar from "../components/Notes/NotesToolbar";
@@ -9,7 +10,6 @@ import ConfirmModal from "../components/Common/ConfirmModal";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
-
   const [search, setSearch] = useState("");
   const [subject, setSubject] = useState("");
 
@@ -40,6 +40,7 @@ function Notes() {
       setNotes(res.data);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to load notes");
     } finally {
       setLoading(false);
     }
@@ -66,17 +67,15 @@ function Notes() {
 
       await api.delete(`/notes/${selectedNoteId}`);
 
+      toast.success("Note deleted successfully");
+
       setConfirmOpen(false);
       setSelectedNoteId(null);
 
       fetchNotes();
     } catch (err) {
       console.error(err);
-
-      alert(
-        err.response?.data?.message ||
-          "Failed to delete note."
-      );
+      toast.error("Failed to delete note");
     } finally {
       setDeleteLoading(false);
     }
@@ -84,19 +83,16 @@ function Notes() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
 
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Notes
         </h1>
 
-        <p className="mt-1 text-gray-500">
+        <p className="mt-1 text-gray-500 dark:text-gray-400">
           Organize your study notes and important concepts.
         </p>
       </div>
-
-      {/* Toolbar */}
 
       <NotesToolbar
         search={search}
@@ -106,37 +102,19 @@ function Notes() {
         onNewNote={handleAddNote}
       />
 
-      {/* Notes */}
-
       {loading ? (
-        <div className="py-12 text-center text-gray-500">
+        <div className="py-12 text-center text-gray-500 dark:text-gray-400">
           Loading...
         </div>
       ) : notes.length === 0 ? (
         search.trim() || subject ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white py-16 text-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mb-4 h-14 w-14 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"
-              />
-            </svg>
-
-            <h3 className="text-xl font-semibold text-gray-800">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white py-16 text-center dark:border-gray-700 dark:bg-gray-800">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
               No Notes Found
             </h3>
 
-            <p className="mt-2 text-gray-500">
-              We couldn't find any notes matching your search or selected
-              subject.
+            <p className="mt-2 text-gray-500 dark:text-gray-400">
+              We couldn't find any notes matching your search.
             </p>
           </div>
         ) : (
@@ -155,8 +133,6 @@ function Notes() {
         </div>
       )}
 
-      {/* Add / Edit Modal */}
-
       <NoteEditorModal
         open={openModal}
         onClose={() => {
@@ -166,8 +142,6 @@ function Notes() {
         editingNote={editingNote}
         onSave={fetchNotes}
       />
-
-      {/* Delete Confirmation */}
 
       <ConfirmModal
         open={confirmOpen}
@@ -181,6 +155,7 @@ function Notes() {
         }}
         onConfirm={handleDelete}
       />
+
     </div>
   );
 }

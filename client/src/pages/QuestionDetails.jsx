@@ -16,10 +16,7 @@ function QuestionDetails() {
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const { data } = await api.get(
-          `/questions/${questionId}`
-        );
-
+        const { data } = await api.get(`/questions/${questionId}`);
         setQuestion(data);
       } catch (error) {
         console.error("Failed to fetch question:", error);
@@ -34,7 +31,7 @@ function QuestionDetails() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <p className="text-lg font-medium text-gray-500">
+        <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
           Loading question...
         </p>
       </div>
@@ -43,8 +40,8 @@ function QuestionDetails() {
 
   if (!question) {
     return (
-      <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-800">
+      <div className="rounded-xl bg-white p-8 text-center shadow-sm dark:bg-gray-800">
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
           Question not found
         </h2>
 

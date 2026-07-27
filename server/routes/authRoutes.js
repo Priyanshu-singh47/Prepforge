@@ -13,7 +13,9 @@ const {
 const {
     signup,
     login,
+    googleLogin,
 } = require("../controllers/authController");
+
 
 router.post(
     "/signup",
@@ -22,11 +24,20 @@ router.post(
     signup
 );
 
+
 router.post(
     "/login",
     authLimiter,
     validate(loginSchema),
     login
 );
+
+
+router.post(
+    "/google",
+    authLimiter,
+    googleLogin
+);
+
 
 module.exports = router;

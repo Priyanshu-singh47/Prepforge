@@ -5,34 +5,45 @@ function WeeklyActivity({ weeklyActivity }) {
   );
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-lg">
-      <h2 className="mb-4 text-lg font-semibold text-gray-900">
+    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-blue-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
+
+      <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
         Weekly Activity
       </h2>
 
+
       <div className="flex h-44 items-end justify-between gap-2">
+
         {weeklyActivity.map((item) => (
+
           <div
             key={item.day}
             className="group flex flex-1 flex-col items-center"
           >
+
             <div
               className="w-full rounded-t-md bg-blue-600 transition-all duration-200 group-hover:scale-y-105 group-hover:bg-blue-700"
               style={{
-                height: `${(item.count / maxValue) * 105}px`,
+                height:`${(item.count / maxValue) * 105}px`,
               }}
             />
 
-            <span className="mt-2 text-xs font-medium text-gray-500 transition-colors duration-200 group-hover:text-blue-600">
+
+            <span className="mt-2 text-xs font-medium text-gray-500 transition group-hover:text-blue-600 dark:text-gray-400">
               {item.day}
             </span>
 
-            <span className="mt-1 text-xs text-gray-400">
+
+            <span className="mt-1 text-xs text-gray-400 dark:text-gray-500">
               {item.count}
             </span>
+
           </div>
+
         ))}
+
       </div>
+
     </div>
   );
 }

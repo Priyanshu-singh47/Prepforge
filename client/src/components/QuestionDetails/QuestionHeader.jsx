@@ -16,12 +16,13 @@ function QuestionHeader({ question }) {
         to={`/subjects/${subjectId}/topics/${topicId}`}
         className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft size={16}/>
         Back to Questions
       </Link>
 
       <div className="mt-4 flex items-center gap-4">
-        <h1 className="text-3xl font-bold text-gray-900">
+
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {question.title}
         </h1>
 
@@ -33,6 +34,7 @@ function QuestionHeader({ question }) {
         >
           {question.difficulty}
         </span>
+
       </div>
     </div>
   );

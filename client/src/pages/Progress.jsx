@@ -29,7 +29,7 @@ function Progress() {
   if (loading) {
     return (
       <div className="flex h-80 items-center justify-center">
-        <p className="text-lg text-gray-500">
+        <p className="text-lg text-gray-500 dark:text-gray-400">
           Loading progress...
         </p>
       </div>
@@ -38,27 +38,25 @@ function Progress() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
 
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Progress
         </h1>
 
-        <p className="mt-1 text-gray-500">
+        <p className="mt-1 text-gray-500 dark:text-gray-400">
           Track your preparation progress across all subjects.
         </p>
       </div>
 
-      {/* Subject Progress */}
 
       <SubjectProgress
         subjects={progressData.subjectProgress}
       />
 
-      {/* Bottom Cards */}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
         <DifficultyProgress
           difficulty={progressData.difficultyProgress}
         />
@@ -70,7 +68,9 @@ function Progress() {
         <WeeklyActivity
           weeklyActivity={progressData.weeklyActivity}
         />
+
       </div>
+
     </div>
   );
 }

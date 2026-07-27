@@ -11,6 +11,7 @@ const indexing = require("./indexing");
 const views = require("./views");
 const storedProcedures = require("./storedProcedures");
 const noSql = require("./noSql");
+const locksDeadlocks = require("./locks");
 
 module.exports = {
     "Introduction to DBMS": introduction,
@@ -22,6 +23,7 @@ module.exports = {
     "Joins": joins,
     "Transactions": transactions,
     "Concurrency Control": concurrencyControl,
+    "Locks & Deadlocks": locksDeadlocks,
     "Indexing": indexing,
     "Views": views,
     "Stored Procedures & Triggers": storedProcedures,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LogOut, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 import api from "../../services/api";
 import ConfirmModal from "../Common/ConfirmModal";
 
@@ -25,8 +26,10 @@ const DangerZone = () => {
       localStorage.removeItem("token");
 
       navigate("/login");
+
     } catch (error) {
       console.error(error);
+
     } finally {
       setLoading(false);
       setDeleteOpen(false);
@@ -35,35 +38,54 @@ const DangerZone = () => {
 
   return (
     <>
-      <div className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm dark:border-red-900 dark:bg-gray-800">
+
         <div className="mb-5">
-          <h2 className="text-base font-semibold text-gray-900">
+
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
             Account Actions
           </h2>
 
           <p className="mt-1 text-sm text-gray-500">
             Logout or permanently delete your account.
           </p>
+
         </div>
 
+
         <div className="flex flex-col gap-3 sm:flex-row">
+
+
           <button
             onClick={() => setLogoutOpen(true)}
-            className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-2.5 font-medium transition hover:bg-gray-50"
+            className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-2.5 font-medium transition hover:bg-gray-50 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
           >
+
             <LogOut className="h-4 w-4" />
+
             Logout
+
           </button>
+
+
 
           <button
             onClick={() => setDeleteOpen(true)}
-            className="flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 font-medium text-red-600 transition hover:bg-red-100"
+            className="flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 font-medium text-red-600 transition hover:bg-red-100 dark:border-red-900 dark:bg-red-900/20 dark:hover:bg-red-900/40"
           >
+
             <Trash2 className="h-4 w-4" />
+
             Delete Account
+
           </button>
+
+
         </div>
+
       </div>
+
+
 
       <ConfirmModal
         open={logoutOpen}
@@ -75,6 +97,8 @@ const DangerZone = () => {
         onCancel={() => setLogoutOpen(false)}
       />
 
+
+
       <ConfirmModal
         open={deleteOpen}
         title="Delete Account"
@@ -84,6 +108,7 @@ const DangerZone = () => {
         onConfirm={handleDeleteAccount}
         onCancel={() => setDeleteOpen(false)}
       />
+
     </>
   );
 };

@@ -7,9 +7,10 @@ const updateProfileSchema = Joi.object({
         .min(2)
         .max(50),
 
-    email: Joi.string()
+    branch: Joi.string()
         .trim()
-        .email(),
+        .max(100)
+        .allow(""),
 
 }).min(1);
 

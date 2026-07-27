@@ -8,110 +8,169 @@ import TodayTasks from "../components/Planner/TodayTasks";
 import UpcomingTasks from "../components/Planner/UpcomingTasks";
 import AddTaskModal from "../components/Planner/AddTaskModal";
 
+
 function Planner() {
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+
 
   const fetchTasks = async () => {
     try {
       const { data } = await api.get("/planner");
       setTasks(data);
-    } catch (error) {
-      console.error("Failed to fetch planner:", error);
+    } catch(error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
+
+
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  today.setHours(0,0,0,0);
 
-  const todayTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      if (!task.dueDate || task.status === "Completed") {
+
+
+  const todayTasks = useMemo(()=>{
+
+    return tasks.filter((task)=>{
+
+      if(!task.dueDate || task.status === "Completed")
         return false;
-      }
 
-      const dueDate = new Date(task.dueDate);
-      dueDate.setHours(0, 0, 0, 0);
 
-      return dueDate.getTime() === today.getTime();
+      const date = new Date(task.dueDate);
+      date.setHours(0,0,0,0);
+
+      return date.getTime() === today.getTime();
+
     });
-  }, [tasks]);
 
-  const upcomingTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      if (!task.dueDate || task.status === "Completed") {
+  },[tasks]);
+
+
+
+
+  const upcomingTasks = useMemo(()=>{
+
+    return tasks.filter((task)=>{
+
+      if(!task.dueDate || task.status === "Completed")
         return false;
-      }
 
-      const dueDate = new Date(task.dueDate);
-      dueDate.setHours(0, 0, 0, 0);
 
-      return dueDate > today;
+      const date = new Date(task.dueDate);
+      date.setHours(0,0,0,0);
+
+      return date > today;
+
     });
-  }, [tasks]);
 
-  if (loading) {
+  },[tasks]);
+
+
+
+
+  if(loading){
+
     return (
       <div className="flex h-96 items-center justify-center">
-        <p className="text-lg text-gray-500">
+        <p className="text-gray-500 dark:text-gray-400">
           Loading planner...
         </p>
       </div>
     );
+
   }
 
+
+
   return (
+
     <div className="space-y-5">
-      {/* Header */}
+
 
       <div className="flex items-center justify-between">
+
+
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Planner
           </h1>
 
-          <p className="mt-1 text-gray-600">
+
+          <p className="mt-1 text-gray-600 dark:text-gray-400">
             Organize your study schedule and stay on track.
           </p>
+
+
         </div>
 
+
+
         <button
-          onClick={() => setOpenModal(true)}
-          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
+          onClick={()=>setOpenModal(true)}
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
         >
-          <Plus size={18} />
+
+          <Plus size={18}/>
+
           Add Task
+
         </button>
+
+
       </div>
 
+
+
+
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
+
+
         <PlannerCalendar />
+
+
 
         <TodayTasks
           tasks={todayTasks}
           refreshTasks={fetchTasks}
         />
 
+
+
         <UpcomingTasks
           tasks={upcomingTasks}
           refreshTasks={fetchTasks}
         />
+
+
       </div>
+
+
+
 
       <AddTaskModal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={()=>setOpenModal(false)}
         refreshTasks={fetchTasks}
       />
+
+
     </div>
+
   );
+
 }
+
 
 export default Planner;

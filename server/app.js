@@ -15,6 +15,9 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
 const resourceRoutes = require("./routes/resourceRoutes");
 
+const notificationRoutes = require("./routes/notificationRoutes");
+const searchRoutes = require("./routes/searchRoutes");
+
 const healthRoutes = require("./routes/healthRoutes");
 
 const errorHandler = require("./middleware/errorMiddleware");
@@ -34,6 +37,8 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/notifications",notificationRoutes);
+app.use("/api/search", searchRoutes);
 
 
 app.get("/", (req, res) => {

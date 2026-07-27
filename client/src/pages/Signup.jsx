@@ -9,44 +9,105 @@ import SignupForm from "../components/Auth/SignupForm";
 function Signup() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async(e)=>{
+
     e.preventDefault();
 
-    try {
-      const { data } = await api.post("/auth/signup", {
-        name,
-        email,
-        password,
-      });
+    try{
+
+      const {data}=await api.post(
+        "/auth/signup",
+        {
+          name,
+          email,
+          password,
+        }
+      );
+
 
       alert(data.message);
 
       navigate("/login");
-    } catch (error) {
+
+
+    }catch(error){
+
       alert(
-        error.response?.data?.message || "Signup failed"
+        error.response?.data?.message ||
+        "Signup failed"
       );
+
     }
+
   };
+
+
+
+  const handleGoogleSignup = async(token)=>{
+
+    try{
+
+      const {data}=await api.post(
+        "/auth/google",
+        {
+          token,
+        }
+      );
+
+
+      localStorage.setItem(
+        "token",
+        data.token
+      );
+
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+
+      navigate("/");
+
+
+    }catch(error){
+
+      alert(
+        error.response?.data?.message ||
+        "Google signup failed"
+      );
+
+    }
+
+  };
+
 
   return (
     <AuthLayout
       title="Create Your Account"
       subtitle="Join PrepForge and start tracking your preparation."
     >
+
       <SignupForm
         name={name}
         setName={setName}
+
         email={email}
         setEmail={setEmail}
+
         password={password}
         setPassword={setPassword}
+
         onSubmit={handleSubmit}
+
+        onGoogleSignup={handleGoogleSignup}
       />
+
     </AuthLayout>
   );
 }
