@@ -38,7 +38,6 @@ email:trimmedEmail,
 });
 
 
-
 if(existingUser){
 
 res.status(400);
@@ -86,13 +85,33 @@ await sendEmail({
 
 email:trimmedEmail,
 
-subject:"PrepForge Email Verification",
+subject:"Verify your PrepForge account",
 
-message:`Your PrepForge verification OTP is ${otp}. It expires in 10 minutes.`,
+message:`
+Hello ${trimmedName},
+
+Welcome to PrepForge! 🎓
+
+Thank you for creating your account.
+
+Your email verification code is:
+
+${otp}
+
+This OTP is valid for 10 minutes.
+
+If you did not create this account, please ignore this email.
+
+Start your preparation journey with PrepForge.
+
+Regards,
+PrepForge Team
+`,
 
 });
 
 }
+
 
 catch(error){
 
@@ -115,6 +134,9 @@ email:user.email,
 });
 
 });
+
+
+
 
 
 
@@ -228,6 +250,8 @@ provider:user.provider,
 
 
 
+
+
 // Resend OTP
 const resendOTP=asyncHandler(async(req,res)=>{
 
@@ -314,9 +338,24 @@ await sendEmail({
 
 email:user.email,
 
-subject:"PrepForge Email Verification",
+subject:"Your new PrepForge verification code",
 
-message:`Your PrepForge verification OTP is ${otp}. It expires in 10 minutes.`,
+message:`
+Hello ${user.name},
+
+Here is your new verification code for PrepForge.
+
+Your OTP is:
+
+${otp}
+
+This code will expire in 10 minutes.
+
+If you did not request this code, please ignore this email.
+
+Regards,
+PrepForge Team
+`,
 
 });
 
@@ -329,6 +368,7 @@ message:"OTP resent successfully",
 });
 
 });
+
 
 
 
@@ -548,6 +588,7 @@ provider:user.provider,
 });
 
 });
+
 
 
 
