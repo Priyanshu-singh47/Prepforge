@@ -12,14 +12,21 @@ port:587,
 
 secure:false,
 
+
 auth:{
     user:process.env.EMAIL_USER,
     pass:process.env.EMAIL_PASSWORD,
 },
 
+
+// Force IPv4 (fix Render ETUNREACH IPv6 issue)
+family:4,
+
+
 tls:{
     rejectUnauthorized:false,
 }
+
 
 });
 
@@ -56,4 +63,5 @@ throw error;
 };
 
 
-module.exports=sendEmail;
+
+module.exports = sendEmail;
