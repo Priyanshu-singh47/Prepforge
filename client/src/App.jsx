@@ -18,12 +18,15 @@ import {
   Login,
   Signup,
   VerifyEmail,
+  PrivacyPolicy,
+  Terms,
+  Contact,
 } from "./pages";
 
 
-function App() {
+function App(){
 
-return (
+return(
 
 <ThemeProvider>
 
@@ -51,6 +54,24 @@ element={<Signup />}
 <Route
 path="/verify-email"
 element={<VerifyEmail />}
+/>
+
+
+<Route
+path="/privacy-policy"
+element={<PrivacyPolicy />}
+/>
+
+
+<Route
+path="/terms"
+element={<Terms />}
+/>
+
+
+<Route
+path="/contact"
+element={<Contact />}
 />
 
 
@@ -132,9 +153,11 @@ element={<Settings />}
 path="*"
 element={
 <div className="flex h-screen items-center justify-center">
+
 <h1 className="text-3xl font-bold text-gray-700">
 404 | Page Not Found
 </h1>
+
 </div>
 }
 />

@@ -12,3 +12,6 @@ export { default as Settings } from "./Settings";
 export { default as Login } from "./Login";
 export { default as Signup } from "./Signup";
 export { default as VerifyEmail } from "./VerifyEmail";
+export { default as PrivacyPolicy } from "./PrivacyPolicy";
+export { default as Terms } from "./Terms";
+export { default as Contact } from "./Contact";

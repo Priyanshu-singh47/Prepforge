@@ -2,37 +2,41 @@ import { Outlet } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 
 function MainLayout(){
 
-  return (
+return(
 
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
-
-
-      <Sidebar />
+<div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
 
 
-      <div className="flex flex-1 flex-col overflow-hidden">
+<Sidebar />
 
 
-        <Navbar />
+<div className="flex flex-1 flex-col">
 
 
-        <main className="min-h-0 flex-1 overflow-y-auto bg-gray-50 px-5 py-4 dark:bg-gray-900">
-
-          <Outlet />
-
-        </main>
+<Navbar />
 
 
-      </div>
+<main className="flex-1 overflow-y-auto bg-gray-50 px-5 py-4 dark:bg-gray-900">
+
+<Outlet />
+
+</main>
 
 
-    </div>
+<Footer />
 
-  );
+
+</div>
+
+
+</div>
+
+);
 
 }
 
