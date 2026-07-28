@@ -9,40 +9,41 @@ try{
 
 await axios.post(
 
-"https://api.brevo.com/v3/smtp/email",
+"https://api.mailjet.com/v3.1/send",
 
 {
 
-sender:{
-name:"PrepForge",
-email:process.env.BREVO_EMAIL,
+Messages:[
+{
+
+From:{
+Email:process.env.MAILJET_EMAIL,
+Name:"PrepForge",
 },
 
 
-to:[
+To:[
 {
-email:options.email,
+Email:options.email,
 }
 ],
 
 
-subject:options.subject,
+Subject:options.subject,
 
 
-textContent:options.message,
+TextPart:options.message,
 
+}
+]
 
 },
 
-
 {
 
-headers:{
-
-"api-key":process.env.BREVO_API_KEY,
-
-"Content-Type":"application/json",
-
+auth:{
+username:process.env.MAILJET_API_KEY,
+password:process.env.MAILJET_SECRET_KEY,
 }
 
 }
@@ -55,15 +56,12 @@ headers:{
 
 catch(error){
 
-
 console.log(
 "EMAIL ERROR:",
 error.response?.data || error.message
 );
 
-
 throw error;
-
 
 }
 
@@ -71,5 +69,4 @@ throw error;
 };
 
 
-
-module.exports = sendEmail;
+module.exports=sendEmail;
