@@ -7,6 +7,7 @@ FiSettings,
 FiLogOut,
 FiMoon,
 FiSun,
+FiMenu,
 } from "react-icons/fi";
 import {useNavigate} from "react-router-dom";
 
@@ -17,7 +18,7 @@ import {useTheme} from "../../context/ThemeContext";
 import {useUser} from "../../context/UserContext";
 
 
-function Navbar(){
+function Navbar({setSidebarOpen}){
 
 const navigate=useNavigate();
 
@@ -175,10 +176,23 @@ navigate("/login");
 
 return(
 
-<header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-gray-900">
+<header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-3 sm:px-6 dark:border-gray-700 dark:bg-gray-900">
 
 
-<div className="search-box relative w-80">
+<div className="flex items-center gap-2 sm:gap-3">
+
+
+<button
+onClick={()=>setSidebarOpen(true)}
+className="rounded-lg p-2 hover:bg-gray-100 lg:hidden dark:hover:bg-gray-800 dark:text-white"
+>
+
+<FiMenu size={22}/>
+
+</button>
+
+
+<div className="search-box relative w-36 sm:w-64 md:w-80">
 
 
 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
@@ -188,14 +202,14 @@ return(
 value={search}
 onChange={handleSearch}
 placeholder="Search..."
-className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-16 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
 />
 
 
 
 {showSearch&&(
 
-<div className="absolute top-12 left-0 z-[100] max-h-96 w-full overflow-y-auto rounded-xl border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+<div className="absolute top-12 left-0 z-[100] max-h-96 w-72 sm:w-full overflow-y-auto rounded-xl border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
 
 
 {results.length===0?(
@@ -244,9 +258,11 @@ className="cursor-pointer rounded-lg p-2 hover:bg-gray-100 dark:text-white dark:
 
 </div>
 
+</div>
 
 
-<div className="flex items-center gap-3">
+
+<div className="flex items-center gap-2 sm:gap-3">
 
 
 <div
@@ -273,7 +289,7 @@ className="relative flex h-10 w-10 items-center justify-center rounded-lg border
 
 {showNotifications&&(
 
-<div className="absolute right-0 top-12 z-[100] w-80 rounded-xl border bg-white p-4 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+<div className="absolute right-0 top-12 z-[100] w-72 sm:w-80 rounded-xl border bg-white p-4 shadow-xl dark:border-gray-700 dark:bg-gray-800">
 
 
 <h3 className="mb-3 font-semibold dark:text-white">
@@ -319,7 +335,7 @@ className="mb-2 w-full rounded-lg border p-3 text-left dark:border-gray-700"
 
 
 
-<div className="h-7 w-px bg-gray-200 dark:bg-gray-700"/>
+<div className="hidden h-7 w-px bg-gray-200 sm:block dark:bg-gray-700"/>
 
 
 
@@ -331,18 +347,18 @@ className="relative"
 
 <button
 onClick={()=>setShowProfile(!showProfile)}
-className="flex items-center gap-3 rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800"
+className="flex items-center gap-2 sm:gap-3 rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800"
 >
 
 
-<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white">
+<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
 
 {user?.name?.charAt(0)?.toUpperCase()||"U"}
 
 </div>
 
 
-<div>
+<div className="hidden sm:block text-left">
 
 <p className="text-sm font-semibold dark:text-white">
 {user?.name||"User"}
@@ -355,7 +371,7 @@ className="flex items-center gap-3 rounded-lg p-1.5 hover:bg-gray-100 dark:hover
 </div>
 
 
-<FiChevronDown/>
+<FiChevronDown className="hidden sm:block"/>
 
 </button>
 
