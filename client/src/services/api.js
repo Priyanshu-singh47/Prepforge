@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
 
-  baseURL: "https://prepforge-backend-fed1.onrender.com/api",
+  baseURL: "https://prepforge-backend-fedl.onrender.com/api",
 
 });
 
