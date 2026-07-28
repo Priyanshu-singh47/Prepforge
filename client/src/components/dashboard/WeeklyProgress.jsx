@@ -19,25 +19,25 @@ function WeeklyProgress({ dashboardData }) {
 
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div className="rounded-xl border border-gray-200 bg-white p-3 sm:p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
 
 
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2">
 
         <div>
 
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
             Weekly Activity
           </h2>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500">
             Questions solved this week
           </p>
 
         </div>
 
 
-        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-600">
+        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">
           {totalSolved} Solved
         </span>
 
@@ -46,7 +46,7 @@ function WeeklyProgress({ dashboardData }) {
 
 
 
-      <div className="h-56">
+      <div className="h-48 sm:h-56">
 
         <ResponsiveContainer width="100%" height="100%">
 
@@ -54,8 +54,8 @@ function WeeklyProgress({ dashboardData }) {
             data={weeklyData}
             margin={{
               top: 10,
-              right: 10,
-              left: -20,
+              right: 5,
+              left: -25,
               bottom: 0,
             }}
           >
@@ -71,7 +71,7 @@ function WeeklyProgress({ dashboardData }) {
               dataKey="day"
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#9ca3af" }}
+              tick={{ fill: "#9ca3af", fontSize: 11 }}
             />
 
 
@@ -79,7 +79,7 @@ function WeeklyProgress({ dashboardData }) {
               allowDecimals={false}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#9ca3af" }}
+              tick={{ fill: "#9ca3af", fontSize: 11 }}
             />
 
 
@@ -90,7 +90,7 @@ function WeeklyProgress({ dashboardData }) {
               dataKey="solved"
               fill="#2563eb"
               radius={[6, 6, 0, 0]}
-              maxBarSize={35}
+              maxBarSize={28}
             />
 
 

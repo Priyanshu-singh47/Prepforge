@@ -28,21 +28,21 @@ function QuickLinks() {
   ];
 
   return (
-    <div className="flex w-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div className="flex w-full flex-col rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
 
-      <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+      <h2 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
         Quick Links
       </h2>
 
 
-      <div className="space-y-2">
+      <div className="space-y-1 sm:space-y-2">
 
         {links.map((link) => (
 
           <button
             key={link.title}
             onClick={() => navigate(link.path)}
-            className="flex w-full items-center justify-between rounded-lg px-3 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
+            className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 sm:py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
           >
 
             <div className="flex items-center gap-3">

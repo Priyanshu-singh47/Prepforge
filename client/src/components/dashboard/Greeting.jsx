@@ -12,17 +12,17 @@ function Greeting({ dashboardData }) {
   const streak = dashboardData?.user?.currentStreak || 0;
 
   return (
-    <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-4 shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
 
 
-      <div>
+      <div className="min-w-0">
 
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white break-words">
           {greeting}, {dashboardData?.user?.name} 👋
         </h1>
 
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-xs sm:text-sm text-gray-500">
           Ready to ace your placement journey?
         </p>
 
@@ -30,7 +30,7 @@ function Greeting({ dashboardData }) {
 
 
 
-      <div className="rounded-full bg-orange-100 px-4 py-2 transition-all duration-300 hover:bg-orange-200">
+      <div className="self-start rounded-full bg-orange-100 px-4 py-2 transition-all duration-300 hover:bg-orange-200 sm:self-auto">
 
         <span className="text-sm font-semibold text-orange-600">
           🔥 {streak} Day{streak !== 1 ? "s" : ""} Streak
