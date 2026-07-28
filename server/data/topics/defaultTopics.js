@@ -381,7 +381,7 @@ count: 10,
     count: 5,
 },
         {
-            name: "Memory Management",
+            name: "Memory Management Concept",
             description: "Understand dynamic memory allocation, pointers, and smart pointers.",
             icon: "💾",
             order: 10,

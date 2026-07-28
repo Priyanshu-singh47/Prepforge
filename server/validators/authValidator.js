@@ -2,34 +2,51 @@ const Joi = require("joi");
 
 const signupSchema = Joi.object({
 
-    name: Joi.string()
-        .trim()
-        .required(),
+name:Joi.string()
+.trim()
+.required(),
 
-    email: Joi.string()
-        .trim()
-        .email()
-        .required(),
+email:Joi.string()
+.trim()
+.email()
+.required(),
 
-    password: Joi.string()
-        .min(6)
-        .required(),
+password:Joi.string()
+.min(6)
+.required(),
 
 });
+
 
 const loginSchema = Joi.object({
 
-    email: Joi.string()
-        .trim()
-        .email()
-        .required(),
+email:Joi.string()
+.trim()
+.email()
+.required(),
 
-    password: Joi.string()
-        .required(),
+password:Joi.string()
+.required(),
 
 });
 
-module.exports = {
-    signupSchema,
-    loginSchema,
+
+const verifyEmailSchema = Joi.object({
+
+email:Joi.string()
+.trim()
+.email()
+.required(),
+
+otp:Joi.string()
+.length(6)
+.required(),
+
+});
+
+
+module.exports={
+signupSchema,
+loginSchema,
+verifyEmailSchema,
 };

@@ -21,7 +21,7 @@ module.exports = {
     Polymorphism: polymorphism,
     "Virtual Functions": virtualFunctions,
     "Friend Functions & Friend Classes": friendFunctionsClasses,
-    "Memory Management": memoryManagement,
+    "Memory Management Concept": memoryManagement,
     "Exception Handling": exceptionHandling,
     "SOLID Principles": solidPrinciples,
 };

@@ -22,7 +22,6 @@ expiresIn:"7d",
 };
 
 
-
 // Signup
 const signup=asyncHandler(async(req,res)=>{
 
@@ -42,59 +41,11 @@ email:trimmedEmail,
 
 if(existingUser){
 
-
-if(existingUser.isVerified){
-
 res.status(400);
 
-throw new Error("User already exists");
-
-}
-
-
-
-// resend OTP for unverified account
-
-const otp=generateOTP();
-
-
-existingUser.verificationOTP=otp;
-
-existingUser.verificationOTPExpire=
-Date.now()+10*60*1000;
-
-
-if(!existingUser.branch){
-
-existingUser.branch="Computer Science";
-
-}
-
-
-await existingUser.save();
-
-
-
-await sendEmail({
-
-email:trimmedEmail,
-
-subject:"PrepForge Email Verification",
-
-message:`Your PrepForge verification OTP is ${otp}. It expires in 10 minutes.`,
-
-});
-
-
-
-return res.status(200).json({
-
-message:"OTP sent to your email",
-
-email:trimmedEmail,
-
-});
-
+throw new Error(
+"Email already registered"
+);
 
 }
 
@@ -120,11 +71,16 @@ isVerified:false,
 
 verificationOTP:otp,
 
-verificationOTPExpire:Date.now()+10*60*1000,
+verificationOTPExpire:
+Date.now()+10*60*1000,
+
+otpLastSent:Date.now(),
 
 });
 
 
+
+try{
 
 await sendEmail({
 
@@ -135,6 +91,18 @@ subject:"PrepForge Email Verification",
 message:`Your PrepForge verification OTP is ${otp}. It expires in 10 minutes.`,
 
 });
+
+}
+
+catch(error){
+
+await User.findByIdAndDelete(user._id);
+
+res.status(500);
+
+throw new Error("Unable to send verification email");
+
+}
 
 
 
@@ -150,12 +118,21 @@ email:user.email,
 
 
 
-
-
 // Verify Email
 const verifyEmail=asyncHandler(async(req,res)=>{
 
 const {email,otp}=req.body;
+
+
+
+if(!email || !otp){
+
+res.status(400);
+
+throw new Error("Email and OTP are required");
+
+}
+
 
 
 const user=await User.findOne({
@@ -186,7 +163,7 @@ throw new Error("Email already verified");
 
 
 
-if(user.verificationOTP!==otp){
+if(String(user.verificationOTP)!==String(otp)){
 
 res.status(400);
 
@@ -211,13 +188,6 @@ user.isVerified=true;
 user.verificationOTP=null;
 
 user.verificationOTPExpire=null;
-
-
-if(!user.branch){
-
-user.branch="Computer Science";
-
-}
 
 
 await user.save();
@@ -251,6 +221,116 @@ provider:user.provider,
 });
 
 });
+
+
+
+
+
+
+
+// Resend OTP
+const resendOTP=asyncHandler(async(req,res)=>{
+
+const {email}=req.body;
+
+
+
+if(!email){
+
+res.status(400);
+
+throw new Error("Email is required");
+
+}
+
+
+
+const user=await User.findOne({
+
+email:email.trim().toLowerCase(),
+
+});
+
+
+
+if(!user){
+
+res.status(404);
+
+throw new Error("User not found");
+
+}
+
+
+
+if(user.isVerified){
+
+res.status(400);
+
+throw new Error("Email already verified");
+
+}
+
+
+
+
+if(user.otpLastSent){
+
+const difference=Date.now()-user.otpLastSent;
+
+
+if(difference<60000){
+
+res.status(400);
+
+throw new Error(
+`Please wait ${Math.ceil((60000-difference)/1000)} seconds before resending OTP`
+);
+
+}
+
+}
+
+
+
+const otp=generateOTP();
+
+
+
+user.verificationOTP=otp;
+
+user.verificationOTPExpire=
+Date.now()+10*60*1000;
+
+user.otpLastSent=Date.now();
+
+
+
+await user.save();
+
+
+
+await sendEmail({
+
+email:user.email,
+
+subject:"PrepForge Email Verification",
+
+message:`Your PrepForge verification OTP is ${otp}. It expires in 10 minutes.`,
+
+});
+
+
+
+res.status(200).json({
+
+message:"OTP resent successfully",
+
+});
+
+});
+
+
 
 
 
@@ -318,16 +398,6 @@ throw new Error("Invalid credentials");
 
 
 
-if(!user.branch){
-
-user.branch="Computer Science";
-
-await user.save();
-
-}
-
-
-
 const token=createToken(user._id);
 
 
@@ -360,10 +430,13 @@ provider:user.provider,
 
 
 
+
+
 // Google Login
 const googleLogin=asyncHandler(async(req,res)=>{
 
 const {token}=req.body;
+
 
 
 if(!token){
@@ -410,8 +483,6 @@ email:googleEmail,
 
 
 
-
-// Existing user
 if(user){
 
 
@@ -426,12 +497,7 @@ throw new Error(
 }
 
 
-
 }
-
-
-
-// New Google user
 else{
 
 
@@ -450,18 +516,6 @@ provider:"google",
 isVerified:true,
 
 });
-
-
-}
-
-
-
-
-if(!user.branch){
-
-user.branch="Computer Science";
-
-await user.save();
 
 }
 
@@ -493,7 +547,6 @@ provider:user.provider,
 
 });
 
-
 });
 
 
@@ -501,6 +554,7 @@ provider:user.provider,
 module.exports={
 signup,
 verifyEmail,
+resendOTP,
 login,
 googleLogin,
 };

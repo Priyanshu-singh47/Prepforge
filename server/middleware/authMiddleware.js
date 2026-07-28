@@ -1,39 +1,76 @@
-const asyncHandler = require("express-async-handler");
-const jwt = require("jsonwebtoken");
+const asyncHandler=require("express-async-handler");
+const jwt=require("jsonwebtoken");
 
-const User = require("../models/User");
+const User=require("../models/User");
 
-const authMiddleware = asyncHandler(async (req, res, next) => {
-    const authHeader = req.headers.authorization;
+const authMiddleware=asyncHandler(async(req,res,next)=>{
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401);
-        throw new Error("No token provided");
-    }
+const authHeader=req.headers.authorization;
 
-    if (!process.env.JWT_SECRET) {
-        throw new Error("JWT Secret missing");
-    }
+if(!authHeader || !authHeader.startsWith("Bearer ")){
 
-    const token = authHeader.split(" ")[1];
+res.status(401);
+throw new Error("No token provided");
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+}
 
-        const user = await User.findById(decoded.id).select("-password");
 
-        if (!user) {
-            res.status(401);
-            throw new Error("User not found");
-        }
+if(!process.env.JWT_SECRET){
 
-        req.user = user;
+throw new Error("JWT Secret missing");
 
-        next();
-    } catch (error) {
-        res.status(401);
-        throw new Error("Invalid or expired token");
-    }
+}
+
+
+const token=authHeader.split(" ")[1];
+
+
+try{
+
+const decoded=jwt.verify(
+token,
+process.env.JWT_SECRET
+);
+
+
+const user=await User.findById(decoded.id)
+.select("-password");
+
+
+if(!user){
+
+res.status(401);
+throw new Error("User not found");
+
+}
+
+
+req.user=user;
+
+next();
+
+
+}catch(error){
+
+
+if(
+error.name==="JsonWebTokenError" ||
+error.name==="TokenExpiredError"
+){
+
+res.status(401);
+throw new Error("Invalid or expired token");
+
+}
+
+
+throw error;
+
+
+}
+
+
 });
 
-module.exports = authMiddleware;
+
+module.exports=authMiddleware;

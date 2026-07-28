@@ -49,6 +49,11 @@ verificationOTPExpire:{
 type:Date,
 },
 
+otpLastSent:{
+type:Date,
+default:null,
+},
+
 currentStreak:{
 type:Number,
 default:0,

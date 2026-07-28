@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState,useEffect} from "react";
 import {useLocation,useNavigate} from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -21,8 +21,37 @@ const [otp,setOtp]=useState("");
 
 const [loading,setLoading]=useState(false);
 
+const [resendLoading,setResendLoading]=useState(false);
+
+const [timeLeft,setTimeLeft]=useState(60);
+
 
 const email=location.state?.email || "";
+
+
+
+useEffect(()=>{
+
+if(timeLeft<=0)
+return;
+
+
+const timer=setInterval(()=>{
+
+setTimeLeft(prev=>prev-1);
+
+},1000);
+
+
+return()=>clearInterval(timer);
+
+
+},[timeLeft]);
+
+
+
+const seconds=timeLeft;
+
 
 
 
@@ -95,6 +124,60 @@ setLoading(false);
 
 
 
+
+
+
+const handleResend=async()=>{
+
+
+try{
+
+setResendLoading(true);
+
+
+await api.post(
+"/auth/resend-otp",
+{
+email,
+}
+);
+
+
+
+setTimeLeft(60);
+
+setOtp("");
+
+
+
+toast.success(
+"New OTP sent successfully"
+);
+
+
+}
+catch(error){
+
+toast.error(
+error.response?.data?.message ||
+"Failed to resend OTP"
+);
+
+}
+finally{
+
+setResendLoading(false);
+
+}
+
+
+};
+
+
+
+
+
+
 return(
 
 <AuthLayout
@@ -133,6 +216,8 @@ className="w-full rounded-xl border px-4 py-3 text-center text-lg tracking-wides
 
 
 
+
+
 <button
 
 type="submit"
@@ -143,9 +228,60 @@ className="w-full rounded-xl bg-blue-600 py-3 text-white hover:bg-blue-700 disab
 
 >
 
-{loading ? "Verifying..." : "Verify Email"}
+{
+loading
+?
+"Verifying..."
+:
+"Verify Email"
+}
 
 </button>
+
+
+
+
+
+<div className="text-center text-sm text-gray-500">
+
+
+{
+timeLeft>0
+
+?
+
+<p>
+Resend OTP in {seconds}s
+</p>
+
+:
+
+<button
+
+type="button"
+
+onClick={handleResend}
+
+disabled={resendLoading}
+
+className="font-medium text-blue-600 hover:underline disabled:opacity-50"
+
+>
+
+{
+resendLoading
+?
+"Sending..."
+:
+"Resend OTP"
+}
+
+</button>
+
+}
+
+
+</div>
 
 
 

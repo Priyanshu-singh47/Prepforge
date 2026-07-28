@@ -1,13 +1,14 @@
-const asyncHandler = require("express-async-handler");
+const asyncHandler=require("express-async-handler");
 
-const User = require("../models/User");
-const Subject = require("../models/Subject");
-const Topic = require("../models/Topic");
-const Question = require("../models/Question");
-const QuestionProgress = require("../models/QuestionProgress");
-const PlannerTask = require("../models/PlannerTask");
+const User=require("../models/User");
+const Subject=require("../models/Subject");
+const Topic=require("../models/Topic");
+const Question=require("../models/Question");
+const QuestionProgress=require("../models/QuestionProgress");
+const PlannerTask=require("../models/PlannerTask");
 
-const getDashboard = asyncHandler(async(req,res)=>{
+
+const getDashboard=asyncHandler(async(req,res)=>{
 
 const userId=req.user._id;
 
@@ -42,28 +43,40 @@ Question.countDocuments(),
 
 
 QuestionProgress.countDocuments({
+
 user:userId,
+
 status:"Done",
+
 }),
 
 
 QuestionProgress.countDocuments({
+
 user:userId,
+
 status:"Review Later",
+
 }),
 
 
 QuestionProgress.countDocuments({
+
 user:userId,
+
 isBookmarked:true,
+
 }),
 
 
 QuestionProgress.countDocuments({
+
 user:userId,
+
 notes:{
 $ne:"",
 },
+
 }),
 
 
@@ -92,12 +105,17 @@ dueDate:1,
 
 
 
+
+
 QuestionProgress.find({
 
 user:userId,
 
 status:{
-$ne:"Not Started",
+$in:[
+"Done",
+"Review Later",
+],
 },
 
 })
@@ -125,6 +143,17 @@ updatedAt:-1,
 
 
 
+if(!user){
+
+res.status(404);
+
+throw new Error("User not found");
+
+}
+
+
+
+
 const completionPercentage=
 
 totalQuestions===0
@@ -141,14 +170,19 @@ Number(
 
 
 
+
+
 const weeklyActivity=[];
+
 
 
 for(let i=6;i>=0;i--){
 
+
 const start=new Date();
 
 start.setHours(0,0,0,0);
+
 
 start.setDate(
 start.getDate()-i
@@ -164,6 +198,7 @@ end.getDate()+1
 
 
 
+
 const solvedCount=await QuestionProgress.countDocuments({
 
 user:userId,
@@ -176,6 +211,7 @@ $lt:end,
 },
 
 });
+
 
 
 
@@ -197,6 +233,8 @@ solved:solvedCount,
 
 
 
+
+
 res.status(200).json({
 
 
@@ -206,9 +244,10 @@ name:user.name,
 
 email:user.email,
 
-currentStreak:user.currentStreak,
+currentStreak:user.currentStreak||0,
 
 },
+
 
 
 
@@ -231,6 +270,7 @@ notes,
 completionPercentage,
 
 },
+
 
 
 
