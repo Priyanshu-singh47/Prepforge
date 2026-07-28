@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
   Mail,
   Lock,
@@ -8,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { GoogleLogin } from "@react-oauth/google";
+
 
 
 function LoginForm({
@@ -26,13 +28,21 @@ const [showPassword,setShowPassword]=useState(false);
 
 return(
 
+
 <form
 onSubmit={onSubmit}
 className="space-y-4"
 >
 
 
+
+{/* Google Login */}
+
+<div className="flex w-full justify-center">
+
 <GoogleLogin
+
+width="100%"
 
 onSuccess={(credentialResponse)=>{
 
@@ -50,28 +60,43 @@ console.log("Google Login Failed");
 
 />
 
+</div>
+
+
+
 
 
 <div className="flex items-center gap-3">
 
+
 <div className="h-px flex-1 bg-gray-200"/>
+
 
 <span className="text-xs font-medium uppercase text-gray-400">
 OR
 </span>
 
+
 <div className="h-px flex-1 bg-gray-200"/>
+
 
 </div>
 
 
 
 
+
+
+
 <div>
 
+
 <label className="mb-1.5 block text-sm font-medium text-gray-700">
+
 Email
+
 </label>
+
 
 
 <div className="relative">
@@ -97,16 +122,31 @@ value={email}
 
 onChange={(e)=>setEmail(e.target.value)}
 
-className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+className="
+w-full
+rounded-lg
+border
+border-gray-200
+py-2.5
+pl-10
+pr-4
+text-sm
+outline-none
+transition-all
+focus:border-blue-500
+focus:ring-2
+focus:ring-blue-100
+"
 
 />
 
 
-
 </div>
 
 
 </div>
+
+
 
 
 
@@ -116,7 +156,9 @@ className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm ou
 
 
 <label className="mb-1.5 block text-sm font-medium text-gray-700">
+
 Password
+
 </label>
 
 
@@ -150,9 +192,25 @@ value={password}
 
 onChange={(e)=>setPassword(e.target.value)}
 
-className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-11 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+className="
+w-full
+rounded-lg
+border
+border-gray-200
+py-2.5
+pl-10
+pr-11
+text-sm
+outline-none
+transition-all
+focus:border-blue-500
+focus:ring-2
+focus:ring-blue-100
+"
 
 />
+
+
 
 
 
@@ -162,9 +220,17 @@ type="button"
 
 onClick={()=>setShowPassword(!showPassword)}
 
-className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"
+className="
+absolute
+right-3
+top-1/2
+-translate-y-1/2
+text-gray-400
+hover:text-blue-600
+"
 
 >
+
 
 {
 showPassword
@@ -174,13 +240,17 @@ showPassword
 <Eye size={18}/>
 }
 
+
 </button>
 
 
+
 </div>
 
 
 </div>
+
+
 
 
 
@@ -190,11 +260,25 @@ showPassword
 
 type="submit"
 
-className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-700 hover:shadow-md active:scale-95"
+className="
+w-full
+rounded-lg
+bg-blue-600
+py-2.5
+text-sm
+font-medium
+text-white
+transition-all
+hover:bg-blue-700
+hover:shadow-md
+active:scale-95
+"
 
 >
 
+
 Login →
+
 
 </button>
 
@@ -202,7 +286,10 @@ Login →
 
 
 
+
+
 <p className="text-center text-sm text-gray-500">
+
 
 Don't have an account?{" "}
 
@@ -211,7 +298,11 @@ Don't have an account?{" "}
 
 to="/signup"
 
-className="font-medium text-blue-600 hover:text-blue-700"
+className="
+font-medium
+text-blue-600
+hover:text-blue-700
+"
 
 >
 
@@ -224,7 +315,10 @@ Sign Up
 
 
 
+
+
 </form>
+
 
 );
 
