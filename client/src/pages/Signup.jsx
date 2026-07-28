@@ -1,12 +1,12 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import api from "../services/api";
 import AuthLayout from "../components/Auth/AuthLayout";
 import SignupForm from "../components/Auth/SignupForm";
 
-import {useUser} from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 
 
 function Signup(){
@@ -49,19 +49,11 @@ return;
 }
 
 
-if(password.length<6){
-
-toast.error("Password must be at least 6 characters");
-
-return;
-
-}
-
-
 
 try{
 
 setLoading(true);
+
 
 
 const {data}=await api.post(
@@ -76,7 +68,7 @@ password,
 
 
 toast.success(
-"OTP sent to your email"
+"OTP sent to your email. Please check inbox and spam folder."
 );
 
 
@@ -91,6 +83,7 @@ email:data.email,
 
 
 }
+
 catch(error){
 
 toast.error(
@@ -99,6 +92,7 @@ error.response?.data?.message ||
 );
 
 }
+
 finally{
 
 setLoading(false);
@@ -112,12 +106,13 @@ setLoading(false);
 
 
 
-
 const handleGoogleSignup=async(token)=>{
+
 
 try{
 
 setLoading(true);
+
 
 
 const {data}=await api.post(
@@ -150,6 +145,7 @@ navigate("/dashboard");
 
 
 }
+
 catch(error){
 
 toast.error(
@@ -158,6 +154,7 @@ error.response?.data?.message ||
 );
 
 }
+
 finally{
 
 setLoading(false);
@@ -165,7 +162,6 @@ setLoading(false);
 }
 
 };
-
 
 
 

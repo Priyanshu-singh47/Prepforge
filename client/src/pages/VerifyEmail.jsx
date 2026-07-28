@@ -10,6 +10,7 @@ import {useUser} from "../context/UserContext";
 
 function VerifyEmail(){
 
+
 const navigate=useNavigate();
 
 const location=useLocation();
@@ -27,6 +28,7 @@ const [timeLeft,setTimeLeft]=useState(60);
 
 
 const email=location.state?.email || "";
+
 
 
 
@@ -50,7 +52,11 @@ return()=>clearInterval(timer);
 
 
 
-const seconds=timeLeft;
+
+const minutes=Math.floor(timeLeft/60);
+
+const seconds=timeLeft%60;
+
 
 
 
@@ -58,6 +64,7 @@ const seconds=timeLeft;
 const handleSubmit=async(e)=>{
 
 e.preventDefault();
+
 
 
 if(!otp.trim()){
@@ -73,6 +80,7 @@ return;
 try{
 
 setLoading(true);
+
 
 
 const {data}=await api.post(
@@ -106,6 +114,7 @@ navigate("/dashboard");
 
 
 }
+
 catch(error){
 
 toast.error(
@@ -114,6 +123,7 @@ error.response?.data?.message ||
 );
 
 }
+
 finally{
 
 setLoading(false);
@@ -135,6 +145,7 @@ try{
 setResendLoading(true);
 
 
+
 await api.post(
 "/auth/resend-otp",
 {
@@ -148,14 +159,13 @@ setTimeLeft(60);
 
 setOtp("");
 
-
-
 toast.success(
-"New OTP sent successfully"
+"New OTP sent. Check inbox and spam folder."
 );
 
 
 }
+
 catch(error){
 
 toast.error(
@@ -164,6 +174,7 @@ error.response?.data?.message ||
 );
 
 }
+
 finally{
 
 setResendLoading(false);
@@ -177,14 +188,13 @@ setResendLoading(false);
 
 
 
-
 return(
 
 <AuthLayout
 
 title="Verify Email"
 
-subtitle={`Enter the OTP sent to ${email}`}
+subtitle={`OTP sent to ${email}. Check spam/junk folder if you don't see it.`}
 
 >
 
@@ -196,6 +206,7 @@ onSubmit={handleSubmit}
 className="space-y-4"
 
 >
+
 
 
 <input
@@ -213,6 +224,15 @@ placeholder="Enter OTP"
 className="w-full rounded-xl border px-4 py-3 text-center text-lg tracking-widest outline-none focus:border-blue-500"
 
 />
+
+
+
+
+<p className="text-center text-xs text-gray-500">
+
+Didn't receive OTP? Check spam folder or wait for resend timer.
+
+</p>
 
 
 
@@ -251,7 +271,7 @@ timeLeft>0
 ?
 
 <p>
-Resend OTP in {seconds}s
+Resend OTP in {minutes}:{seconds<10 ? `0${seconds}` : seconds}
 </p>
 
 :
