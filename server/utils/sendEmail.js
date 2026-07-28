@@ -1,19 +1,32 @@
-const { Resend } = require("resend");
-
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+const nodemailer = require("nodemailer");
 
 
 const sendEmail = async(options)=>{
 
 
+const transporter = nodemailer.createTransport({
+
+host:"smtp-relay.brevo.com",
+
+port:587,
+
+secure:false,
+
+auth:{
+    user:process.env.BREVO_EMAIL,
+    pass:process.env.BREVO_SMTP_KEY,
+},
+
+});
+
+
+
 try{
 
 
-await resend.emails.send({
+await transporter.sendMail({
 
-from:"PrepForge <onboarding@resend.dev>",
+from:`"PrepForge" <${process.env.BREVO_EMAIL}>`,
 
 to:options.email,
 
@@ -26,6 +39,7 @@ text:options.message,
 
 }
 
+
 catch(error){
 
 console.log("EMAIL ERROR:",error.message);
@@ -36,7 +50,6 @@ throw error;
 
 
 };
-
 
 
 module.exports = sendEmail;
