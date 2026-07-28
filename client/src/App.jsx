@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 
 import MainLayout from "./components/layouts/MainLayout";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
+
 
 import {
   Dashboard,
@@ -24,19 +26,26 @@ import {
 } from "./pages";
 
 
+
 function App(){
+
 
 return(
 
+
 <ThemeProvider>
+
 
 <Routes>
 
 
-<Route
-path="/"
-element={<Navigate to="/dashboard" replace />}
+
+<Route 
+path="/" 
+element={<Navigate to="/login" replace />}
 />
+
+
 
 
 <Route
@@ -45,10 +54,12 @@ element={<Login />}
 />
 
 
+
 <Route
 path="/signup"
 element={<Signup />}
 />
+
 
 
 <Route
@@ -57,10 +68,14 @@ element={<VerifyEmail />}
 />
 
 
+
+
+
 <Route
 path="/privacy-policy"
 element={<PrivacyPolicy />}
 />
+
 
 
 <Route
@@ -69,11 +84,21 @@ element={<Terms />}
 />
 
 
+
 <Route
 path="/contact"
 element={<Contact />}
 />
 
+
+
+
+
+
+
+{/* Protected Routes */}
+
+<Route element={<ProtectedRoute />}>
 
 
 <Route element={<MainLayout />}>
@@ -85,10 +110,12 @@ element={<Dashboard />}
 />
 
 
+
 <Route
 path="/subjects"
 element={<Subjects />}
 />
+
 
 
 <Route
@@ -97,10 +124,12 @@ element={<Topics />}
 />
 
 
+
 <Route
 path="/subjects/:subjectId/resources"
 element={<Resources />}
 />
+
 
 
 <Route
@@ -109,10 +138,12 @@ element={<Questions />}
 />
 
 
+
 <Route
 path="/subjects/:subjectId/topics/:topicId/questions/:questionId"
 element={<QuestionDetails />}
 />
+
 
 
 <Route
@@ -121,10 +152,12 @@ element={<Planner />}
 />
 
 
+
 <Route
 path="/progress"
 element={<Progress />}
 />
+
 
 
 <Route
@@ -133,10 +166,12 @@ element={<Notes />}
 />
 
 
+
 <Route
 path="/bookmarks"
 element={<Bookmarks />}
 />
+
 
 
 <Route
@@ -145,30 +180,61 @@ element={<Settings />}
 />
 
 
+
+</Route>
+
+
 </Route>
 
 
 
-<Route
-path="*"
-element={
-<div className="flex h-screen items-center justify-center">
 
-<h1 className="text-3xl font-bold text-gray-700">
+
+
+
+
+<Route
+
+path="*"
+
+element={
+
+<div className="
+flex 
+h-screen 
+items-center 
+justify-center
+">
+
+
+<h1 className="
+text-3xl 
+font-bold 
+text-gray-700
+">
+
 404 | Page Not Found
+
 </h1>
 
+
 </div>
+
 }
+
 />
+
 
 
 </Routes>
 
+
 </ThemeProvider>
+
 
 );
 
 }
+
 
 export default App;
