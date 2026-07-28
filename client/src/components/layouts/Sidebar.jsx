@@ -3,7 +3,7 @@ import { NavLink,useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 
 import { navItems } from "../../constants/navigation";
-import ConfirmModal from "../Common/ConfirmModal";
+import ConfirmModal from "../common/ConfirmModal";
 
 function Sidebar(){
 

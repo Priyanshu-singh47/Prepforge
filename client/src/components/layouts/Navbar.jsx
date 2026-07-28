@@ -11,7 +11,7 @@ FiSun,
 import {useNavigate} from "react-router-dom";
 
 import api from "../../services/api";
-import ConfirmModal from "../Common/ConfirmModal";
+import ConfirmModal from "../common/ConfirmModal";
 
 import {useTheme} from "../../context/ThemeContext";
 import {useUser} from "../../context/UserContext";

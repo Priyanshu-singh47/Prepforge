@@ -3,7 +3,7 @@ import { LogOut, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../services/api";
-import ConfirmModal from "../Common/ConfirmModal";
+import ConfirmModal from "../common/ConfirmModal";
 
 const DangerZone = () => {
   const navigate = useNavigate();
