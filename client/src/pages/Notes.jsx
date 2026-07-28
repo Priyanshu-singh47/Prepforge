@@ -6,7 +6,7 @@ import NotesToolbar from "../components/Notes/NotesToolbar";
 import NoteCard from "../components/Notes/NoteCard";
 import NoteEditorModal from "../components/Notes/NoteEditorModal";
 import EmptyState from "../components/Notes/EmptyState";
-import ConfirmModal from "../components/Common/ConfirmModal";
+import ConfirmModal from "../components/common/ConfirmModal";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
