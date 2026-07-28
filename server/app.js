@@ -34,7 +34,7 @@ app.use(
 cors({
     origin:[
         "http://localhost:5173",
-        "https://prepforge.vercel.app"
+        "https://prepforge-tau.vercel.app"
     ],
     credentials:true,
 })
