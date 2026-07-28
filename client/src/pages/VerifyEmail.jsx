@@ -194,7 +194,7 @@ return(
 
 title="Verify Email"
 
-subtitle={`OTP sent to ${email}. Check spam/junk folder if you don't see it.`}
+subtitle={`OTP sent to ${email}.`}
 
 >
 
