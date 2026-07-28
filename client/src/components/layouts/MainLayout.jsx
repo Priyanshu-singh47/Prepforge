@@ -9,13 +9,13 @@ function MainLayout(){
 
 return(
 
-<div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 
 
 <Sidebar />
 
 
-<div className="flex flex-1 flex-col">
+<div className="ml-64 flex min-h-screen flex-1 flex-col">
 
 
 <Navbar />
