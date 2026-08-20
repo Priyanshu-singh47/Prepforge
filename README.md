@@ -42,10 +42,11 @@ Instead of managing preparation across multiple platforms, PrepForge brings the 
 * MongoDB
 
 **Tools & Deployment**
-
-* Git & GitHub
-* VS Code
-* Vercel
+- Git & GitHub
+- VS Code
+- Vercel — Frontend Deployment
+- Render — Backend Deployment
+- MongoDB Atlas — Database
 
 ## 🏗️ Architecture
 
