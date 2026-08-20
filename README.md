@@ -139,8 +139,11 @@ npm run dev
 ## 👨‍💻 Developer
 
 **Priyanshu Singh**
+
 Computer Science & Engineering
+
 Thapar Institute of Engineering and Technology
+
 
 ## 📄 License
 
